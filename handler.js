@@ -6,8 +6,8 @@ var sleep = require('sleep');
 var EventEmitter = require("events").EventEmitter;
 var responseMsg = new EventEmitter();
 var sns = new AWS.SNS();
-var Key_Id          = 'A***REMOVED***'
-var secretAccessKey = '***REMOVED***'
+var Key_Id          = 'A***REMOVED***';
+var secretAccessKey = '***REMOVED***';
 AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
 
 var fetch_request_message = function(event){
@@ -140,7 +140,7 @@ var send_message = function(messageJSON){
 }
 
 module.exports.sendMessage = (event, context, callback) => {
-  var messageJSON = format_message_sns(event);
+  var messageJSON = fetch_request_message(event);
   validate_tries_message(messageJSON);
 };
 
