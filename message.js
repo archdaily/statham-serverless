@@ -81,14 +81,6 @@ var get_string_body = function(messageJSON){
   return JSON.stringify(messageJSON.body);
 }
 
-var make_json_response = function(statusCode,body){
-  var response = {
-    statusCode: statusCode,
-    body: JSON.stringify(body)
-  };
-  return response;
-}
-
 // Code SNS
 
 var serialize_options = function(messageJSON){
