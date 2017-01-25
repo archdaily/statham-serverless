@@ -2,40 +2,30 @@
 var https             = require('https');
 var url               = require('url');
 var AWS               = require('aws-sdk');
-var sleep             = require('sleep');
 
 class Message {
 
   constructor(message) {
+      this.message  = message;
 
       this.method   = message.method;
       this.body     = message.body;
       this.url      = message.url;
       this.source   = message.source;
-      this.dest     = message.dest;    
+      this.dest     = message.dest;
   }
 
   send() {
-    var messageJSON = fetch_request_message(event);
-    validate_tries_message(messageJSON, function(response){
-    callback(null, response);  
-    }); 
-  }  
+    validate_tries_message(this.message, function(response){
+      if(response.statusCode == 200)
+        return(true);
+      else
+        return(false);
+    });
+  }
 }
 
 // Code Message
-
-var fetch_request_message = function(event){
-  var messageJSON;
-  if(event.Records){
-    messageJSON = JSON.parse(event.Records[0].Sns.Message);
-  }
-  else{
-    messageJSON = JSON.parse(event.body);
-    messageJSON.source = event.headers.Origin;
-  }
-  return messageJSON;
-}
 
 var validate_tries_message = function(messageJSON, callback){
   if(!messageJSON.tries)
@@ -56,13 +46,13 @@ var mail_message_generator = function(messageJSON){
   var message = `
 Statham tried to transporting five times the message but the destination couldn't be reached.
 Details:
-  
+
     Method: ${messageJSON.method}
     URL destination: ${messageJSON.url}
     Source: ${messageJSON.source}
     Destination path: ${messageJSON.dest}
 
-Body:  
+Body:
 ${JSON.stringify(messageJSON.body, null, 2)}
 
 Error: ${messageJSON.error}
@@ -102,7 +92,7 @@ var make_json_response = function(statusCode,body){
 // Code SNS
 
 var serialize_options = function(messageJSON){
-  var postData = get_string_body(messageJSON);    
+  var postData = get_string_body(messageJSON);
   var urlDest = url.parse(messageJSON.url);
   messageJSON.dest = urlDest.pathname;
   var options = {
@@ -174,7 +164,6 @@ var get_response = function(errSNS, dataSNS){
 // SEND MESSAGE
 
 var send_message = function(messageJSON, callback){
-  if(messageJSON.tries > 1) sleep(1000);
   var postData = get_string_body(messageJSON);
   var options = serialize_options(messageJSON);
   make_http_request(options,postData,function(response){
@@ -183,8 +172,8 @@ var send_message = function(messageJSON, callback){
       messageJSON.error = body.error;
       publish_message_sns(
         serialize_sns(
-          JSON.stringify(messageJSON), 
-          "Message not delivered From Lambda", 
+          JSON.stringify(messageJSON),
+          "Message not delivered From Lambda",
           'arn:aws:sns:us-west-2:451967854914:Statham-notification'),
         function(responseSNS){
           body.SNS = responseSNS;
@@ -192,7 +181,7 @@ var send_message = function(messageJSON, callback){
           callback(response);
       });
     }
-    else 
+    else
       callback(response);
   });
 }
