@@ -2,6 +2,7 @@
 var https             = require('https');
 var url               = require('url');
 var AWS               = require('aws-sdk');
+var utilities         = require('utilities');
 
 class Message {
 
@@ -69,7 +70,7 @@ var error_message_to_email = function(messageJSON, callback){
       'arn:aws:sns:us-west-2:451967854914:Statham-mailer'
       ),
       function(responseSNS){
-        var response = make_json_response(200,{
+        var response = utilities.make_json_response(200,{
           "SNS" : responseSNS
         });
         callback(response);
@@ -119,14 +120,14 @@ var make_http_request = function(options, data, callback){
       dataResponse += chunk;
     });
     res.on('end', () => {
-      var response = make_json_response(200,{
+      var response = utilities.make_json_response(200,{
         "success" : JSON.parse(dataResponse)
       });
       callback(response);
     });
   });
   req.on('error', (e) => {
-    var response = make_json_response(400,{
+    var response = utilities.make_json_response(400,{
       "error" : e.message
     })
     callback(response);

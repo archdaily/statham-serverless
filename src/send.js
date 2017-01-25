@@ -1,5 +1,6 @@
 'use strict';
-var Message = require('message');
+var Message   = require('message');
+var utilities = require('utilities');
 
 module.exports.send = (event, context, callback) => {
   if(event.source == 'aws.events'){
@@ -12,21 +13,13 @@ module.exports.send = (event, context, callback) => {
     var was_sent = messageOBJ.send();
     if(was_sent){
     }
-    var back = make_json_response(200,{
+    var back = utilities.make_json_response(200,{
       "Response" : "Statham received your message!"
     });
     callback(null, back);
   }
 
 };
-
-var make_json_response = function(statusCode,body){
-  var response = {
-    statusCode: statusCode,
-    body: JSON.stringify(body)
-  };
-  return response;
-}
 
 var fetch_request_message = function(event){
   var messageJSON;
