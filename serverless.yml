@@ -6,9 +6,9 @@ provider:
   region: us-west-2
 
 functions:
-  sendMessage:
-    timeout: 12
-    handler: handler.sendMessage
+  send:
+    timeout: 6
+    handler: src/send.send
     events:
       - http:
           path: send
