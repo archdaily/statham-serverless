@@ -3,7 +3,7 @@ var https             = require('https');
 var url               = require('url');
 var AWS               = require('aws-sdk');
 var utilities         = require('utilities');
-
+var cloudwatch        = require('cloudwatch');
 
 class Message {
 
@@ -155,22 +155,6 @@ var get_response = function(errSNS, dataSNS){
   return responseSNS;
 }
 
-var enable_rule = function(){
-  var Key_Id            = 'A***REMOVED***';
-  var secretAccessKey   = '***REMOVED***';
-  AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
-  var cloudwatchevents = new AWS.CloudWatchEvents();
-  var params = {
-    Name: 'Statham-cycle',
-    ScheduleExpression: 'cron(0/2 * * * ? *)',
-    State: 'ENABLED'
-  };
-  cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
-  });
-}
-
 // SEND MESSAGE
 
 var send_message = function(messageJSON, callback){
@@ -190,7 +174,7 @@ var send_message = function(messageJSON, callback){
           response.body = JSON.stringify(body);
           callback(response);
       });
-      enable_rule();
+      cloudwatch.enable_rule();
     }
     else
       callback(response);
