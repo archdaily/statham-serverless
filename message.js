@@ -2,7 +2,6 @@
 
 var https             = require('https');
 var url               = require('url');
-var AWS               = require('aws-sdk');
 var utilities         = require('utilities');
 var cloudwatch        = require('cloudwatch');
 var sns               = require('sns')
@@ -11,7 +10,6 @@ class Message {
 
   constructor(message) {
       this.message  = message;
-
       this.method   = message.method;
       this.body     = message.body;
       this.url      = message.url;
