@@ -4,11 +4,12 @@ var utilities   = require('utilities');
 var sqs         = require('sqs');
 
 module.exports.send = (event, context, callback) => {
-  console.log(event);
   if(event.source == 'aws.events'){
-    sqs.get_count_trunk(function(number){
-
-    });
+    console.log("SQS LIST!");
+    var listMsg = sqs.get_list_trunk();
+    for(message in listMsg){
+      console.log(message);
+    }
   }
   else{
     console.log("SINGLE MESSAGE!");
@@ -20,5 +21,4 @@ module.exports.send = (event, context, callback) => {
     });
     callback(null, back);
   }
-
 };
