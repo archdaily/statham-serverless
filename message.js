@@ -45,23 +45,23 @@ var validate_tries_message = function(messageJSON, callback){
     });
 }
 
-var mail_message_generator = function(messageJSON){
-  var message = `
-Statham tried to transporting five times the message but the destination couldn't be reached.
-Details:
-
-    Method: ${messageJSON.method}
-    URL destination: ${messageJSON.url}
-    Source: ${messageJSON.source}
-    Destination path: ${messageJSON.dest}
-
-Body:
-${JSON.stringify(messageJSON.body, null, 2)}
-
-Error: ${messageJSON.error}
-`;
-  return message;
-}
+//var mail_message_generator = function(messageJSON){
+//  var message = `
+//Statham tried to transporting five times the message but the destination couldn't be reached.
+//Details:
+//
+//    Method: ${messageJSON.method}
+//    URL destination: ${messageJSON.url}
+//    Source: ${messageJSON.source}
+//    Destination path: ${messageJSON.dest}
+//
+//Body:
+//${JSON.stringify(messageJSON.body, null, 2)}
+//
+//Error: ${messageJSON.error}
+//`;
+//  return message;
+//}
 
 var error_message_to_email = function(messageJSON, callback){
   ses.mail_message_generator();
