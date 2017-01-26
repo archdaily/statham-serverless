@@ -4,7 +4,8 @@ var https             = require('https');
 var url               = require('url');
 var utilities         = require('utilities');
 var cloudwatch        = require('cloudwatch');
-var sns               = require('sns')
+var sns               = require('sns');
+var ses               = require('ses');
 
 class Message {
 
@@ -63,16 +64,10 @@ Error: ${messageJSON.error}
 }
 
 var error_message_to_email = function(messageJSON, callback){
-  var message = mail_message_generator(messageJSON);
-  sns.publish_message_sns(
-      message,
-      "A message reached the maximum number of sending attempts",
-      'arn:aws:sns:us-west-2:451967854914:Statham-mailer'
-  );
-  var response = utilities.make_json_response(200,{
-    "SNS" : responseSNS
+  ses.mail_message_generator();
+  var response = utilities.make_json_response(400,{
+    "response" : "email sended"
   });
-  callback(response);
 }
 
 var get_string_body = function(messageJSON){
