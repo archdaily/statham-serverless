@@ -6,27 +6,27 @@ var secretAccessKey   = '***REMOVED***';
 AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
 var cloudwatchevents  = new AWS.CloudWatchEvents();
 
-module.export.enable_rule = function(){
+module.exports.enable_rule = function(){
   var params = {
     Name: 'Statham-cycle',
     ScheduleExpression: 'cron(0/2 * * * ? *)',
     State: 'ENABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log(err, err.stack); 
-    else     console.log(data);           
+    if (err) console.log(err, err.stack);
+    else     console.log(data);
   });
 }
 
-module.export.disable_rule = function(){
+module.exports.disable_rule = function(){
   var params = {
     Name: 'Statham-cycle',
     //ScheduleExpression: 'cron(0/2 * * * ? *)',
     State: 'DISABLE'
   };
   cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log(err, err.stack); 
-    else     console.log(data);           
+    if (err) console.log(err, err.stack);
+    else     console.log(data);
   });
 
 }
