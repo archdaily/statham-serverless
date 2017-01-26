@@ -1,5 +1,6 @@
 'use strict';
 
+var AWS               = require('aws-sdk');
 var Key_Id            = 'A***REMOVED***';
 var secretAccessKey   = '***REMOVED***';
 AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
