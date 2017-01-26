@@ -16,18 +16,16 @@ module.exports.mail_message_generator = function(){
     Destination: { ToAddresses: to },
     Message: {
         Subject:{
-           Data: 'A Message To You Rudy'
+           Data: 'Mensaje de Statham'
         },
         Body: {
             Text: {
-                Data: 'Stop your messing around',
+                Data: 'no se pudo entregar el mensaje',
             }
         }
     }
   }
   , function(err, data) {
       if(err) console.log(err);
-          console.log('Email sent:');
-          console.log(data);
  });
 }
