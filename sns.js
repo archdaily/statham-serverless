@@ -9,7 +9,7 @@ var sns = new AWS.SNS();
 module.exports.publish_message_sns = function(message, subject, topic){
   var params = serialize_sns(message, subject, topic);
   publish_message_async(params, function(response){
-  	return responseSNS;
+  	return response;
   });
 }
 
