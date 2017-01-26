@@ -15,7 +15,7 @@ module.exports.publish_message_sns = function(message, subject, topic){
 
 var publish_message_async = function(params, callback){
   sns.publish(params, function(errSNS, dataSNS){
-    var responseSNS = sns.get_response(errSNS, dataSNS);
+    var responseSNS = get_response(errSNS, dataSNS);
     callback(responseSNS);
   });
 }
