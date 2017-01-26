@@ -162,7 +162,7 @@ var enable_rule = function(){
   var cloudwatchevents = new AWS.CloudWatchEvents();
   var params = {
     Name: 'Statham-cycle',
-    ScheduleExpression: '0/2 * * * ? *',
+    ScheduleExpression: 'cron(0/2 * * * ? *)',
     State: 'ENABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
