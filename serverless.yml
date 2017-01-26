@@ -7,7 +7,7 @@ provider:
 
 functions:
   send:
-    timeout: 6
+    timeout: 20
     handler: src/send.send
     events:
       - http:
