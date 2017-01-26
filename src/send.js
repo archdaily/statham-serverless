@@ -8,7 +8,7 @@ module.exports.send = (event, context, callback) => {
   }
   else{
     console.log("SINGLE MESSAGE!");
-    var messageJSON = fetch_request_message(event);
+    var messageJSON = utilities.fetch_request_message(event);
     var messageOBJ = new Message(messageJSON);
     var was_sent = messageOBJ.send();
     if(was_sent){
@@ -20,15 +20,3 @@ module.exports.send = (event, context, callback) => {
   }
 
 };
-
-var fetch_request_message = function(event){
-  var messageJSON;
-  if(event.source == 'aws.events'){
-    messageJSON = JSON.parse(event.Records[0].Sns.Message);
-  }
-  else{
-    messageJSON = JSON.parse(event.body);
-    messageJSON.source = event.headers.Origin;
-  }
-  return messageJSON;
-}
