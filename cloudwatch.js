@@ -21,8 +21,8 @@ module.exports.enable_rule = function(){
 module.exports.disable_rule = function(){
   var params = {
     Name: 'Statham-cycle',
-    //ScheduleExpression: 'cron(0/2 * * * ? *)',
-    State: 'DISABLE'
+    ScheduleExpression: 'cron(0/2 * * * ? *)',
+    State: 'DISABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
     if (err) console.log(err, err.stack);

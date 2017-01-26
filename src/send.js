@@ -1,6 +1,7 @@
 'use strict';
-var Message   = require('message');
-var utilities = require('utilities');
+var Message     = require('message');
+var utilities   = require('utilities');
+var cloudwatch  = require('cloudwatch');
 
 module.exports.send = (event, context, callback) => {
   if(event.source == 'aws.events'){
@@ -12,6 +13,7 @@ module.exports.send = (event, context, callback) => {
     var messageOBJ = new Message(messageJSON);
     var was_sent = messageOBJ.send();
     if(was_sent){
+      cloudwatch.disable_rule();
     }
     var back = utilities.make_json_response(200,{
       "Response" : "Statham received your message!"
