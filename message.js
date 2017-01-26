@@ -1,9 +1,11 @@
 'use strict';
+
 var https             = require('https');
 var url               = require('url');
 var AWS               = require('aws-sdk');
 var utilities         = require('utilities');
 var cloudwatch        = require('cloudwatch');
+var sns               = require('sns')
 
 class Message {
 
@@ -64,19 +66,15 @@ Error: ${messageJSON.error}
 
 var error_message_to_email = function(messageJSON, callback){
   var message = mail_message_generator(messageJSON);
-  publish_message_sns(
-    serialize_sns(
+  sns.publish_message_sns(
       message,
       "A message reached the maximum number of sending attempts",
       'arn:aws:sns:us-west-2:451967854914:Statham-mailer'
-      ),
-      function(responseSNS){
-        var response = utilities.make_json_response(200,{
-          "SNS" : responseSNS
-        });
-        callback(response);
-      }
   );
+  var response = utilities.make_json_response(200,{
+    "SNS" : responseSNS
+  });
+  callback(response);
 }
 
 var get_string_body = function(messageJSON){
@@ -100,17 +98,6 @@ var serialize_options = function(messageJSON){
     }
   };
   return options;
-}
-
-var publish_message_sns = function(params, callback){
-  var Key_Id            = 'A***REMOVED***';
-  var secretAccessKey   = '***REMOVED***';
-  AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
-  var sns = new AWS.SNS();
-  sns.publish(params, function(errSNS, dataSNS){
-    var responseSNS = get_response(errSNS, dataSNS);
-    callback(responseSNS);
-  });
 }
 
 var make_http_request = function(options, data, callback){
@@ -137,24 +124,6 @@ var make_http_request = function(options, data, callback){
   req.end();
 }
 
-var serialize_sns = function(message, subject, topic){
-  var snsParams = {
-    Message: message,
-    Subject: subject,
-    TopicArn: topic
-  };
-  return snsParams;
-}
-
-var get_response = function(errSNS, dataSNS){
-  var responseSNS = "";
-  if(errSNS)
-    responseSNS = 'Send SNS error: ' + errSNS;
-  else
-    responseSNS = 'Data: ' + dataSNS;
-  return responseSNS;
-}
-
 // SEND MESSAGE
 
 var send_message = function(messageJSON, callback){
@@ -164,16 +133,12 @@ var send_message = function(messageJSON, callback){
     var body = JSON.parse(response.body);
     if(body.error){
       messageJSON.error = body.error;
-      publish_message_sns(
-        serialize_sns(
+      var responseSNS = sns.publish_message_sns(
           JSON.stringify(messageJSON),
           "Message not delivered From Lambda",
-          'arn:aws:sns:us-west-2:451967854914:Statham-notification'),
-        function(responseSNS){
-          body.SNS = responseSNS;
-          response.body = JSON.stringify(body);
-          callback(response);
-      });
+          'arn:aws:sns:us-west-2:451967854914:Statham-notification');
+      body.SNS = responseSNS;
+      response.body = JSON.stringify(body);
       cloudwatch.enable_rule();
     }
     else
