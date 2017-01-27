@@ -8,27 +8,21 @@ var sns               = require('sns');
 var ses               = require('ses');
 
 class Message {
-
   constructor(message) {
-      this.message  = message;
-      this.method   = message.method;
-      this.body     = message.body;
-      this.url      = message.url;
-      this.source   = message.source;
-      this.dest     = message.dest;
+    this.message  = message;
+    this.method   = message.method;
+    this.body     = message.body;
+    this.url      = message.url;
+    this.source   = message.source;
+    this.dest     = message.dest;
   }
 
   send() {
     validate_tries_message(this.message, function(response){
-      if(response.statusCode == 200)
-        return(true);
-      else
-        return(false);
+      console.log(response);
     });
   }
 }
-
-// Code Message
 
 var validate_tries_message = function(messageJSON, callback){
   if(!messageJSON.tries)
@@ -45,24 +39,6 @@ var validate_tries_message = function(messageJSON, callback){
     });
 }
 
-//var mail_message_generator = function(messageJSON){
-//  var message = `
-//Statham tried to transporting five times the message but the destination couldn't be reached.
-//Details:
-//
-//    Method: ${messageJSON.method}
-//    URL destination: ${messageJSON.url}
-//    Source: ${messageJSON.source}
-//    Destination path: ${messageJSON.dest}
-//
-//Body:
-//${JSON.stringify(messageJSON.body, null, 2)}
-//
-//Error: ${messageJSON.error}
-//`;
-//  return message;
-//}
-
 var error_message_to_email = function(messageJSON, callback){
   ses.mail_message_generator();
   var response = utilities.make_json_response(200,{
@@ -73,8 +49,6 @@ var error_message_to_email = function(messageJSON, callback){
 var get_string_body = function(messageJSON){
   return JSON.stringify(messageJSON.body);
 }
-
-// Code SNS
 
 var serialize_options = function(messageJSON){
   var postData = get_string_body(messageJSON);
@@ -117,8 +91,6 @@ var make_http_request = function(options, data, callback){
   req.end();
 }
 
-// SEND MESSAGE
-
 var send_message = function(messageJSON, callback){
   var postData = get_string_body(messageJSON);
   var options = serialize_options(messageJSON);
@@ -135,6 +107,8 @@ var send_message = function(messageJSON, callback){
       cloudwatch.enable_rule();
     }
     else
+      console.log("mensaje enviado:");
+      console.log(messageJSON);
       callback(response);
   });
 }
