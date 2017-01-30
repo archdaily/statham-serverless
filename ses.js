@@ -19,7 +19,7 @@ module.exports.mail_message_generator = function(){
            Data: 'Mensaje de Statham'
         },
         Body: {
-            Text: {
+            Html: {
                 Data: render_body_html()
             }
         }
@@ -31,8 +31,7 @@ module.exports.mail_message_generator = function(){
 }
 
 var render_body_html = function(){
-  return
-  `<!DOCTYPE html>
+  return `<!DOCTYPE html>
   <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8"> <!-- utf-8 works for most cases -->
