@@ -24,13 +24,14 @@ module.exports.get_list_trunk = function(callback){
   });
 }
 
-module.exports.delete_msg_trunk = function(ReceiptHandle){
+module.exports.delete_msg_trunk = function(ReceiptHandle, callback){
   var params = {
   QueueUrl: trunkURL,
   ReceiptHandle: ReceiptHandle
  };
  sqs.deleteMessage(params, function(err, data) {
    if (err) console.log(err, err.stack);
+   callback();
  });
 }
 
