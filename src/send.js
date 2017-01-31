@@ -14,25 +14,27 @@ module.exports.send = (event, context, callback) => {
       console.log("list trunk:");
       console.log(listMsg);
 
-      async.each(listMsg.Messages, function(message, next){
+      async.every(listMsg.Messages, function(message, next){
+        sqs.delete_msg_trunk(message.ReceiptHandle);
         console.log("message");
         console.log(message);
         send_message(JSON.parse(message.Message), function(sent){
-          sqs.delete_msg_trunk(message.ReceiptHandle);
           console.log("message sended OUT");
-          next();
+          next(null, sent);
         });
-      }, function(sent) {
+      }, function(sent, result) {
         console.log("finish!");
-        check_sqs();
+        console.log(result);
+        if(result) check_sqs();
       });
     });
   }
   else{
     console.log("sending message arrived from HTTP");
     var messageJSON = utilities.fetch_request_message(event);
-    var messageOBJ = new Message(messageJSON);
-    messageOBJ.send();
+    send_message(messageJSON, function(sent){
+
+    });
     var back = utilities.make_json_response(200,{
       "Response" : "Statham received your message!"
     });
@@ -40,10 +42,8 @@ module.exports.send = (event, context, callback) => {
   }
 };
 
-var send_message = function(message){
-  var messageOBJ = new Message(message);
-  messageOBJ.send(function(response){
-    console.log(response);
+var send_message = function(message, callback){
+  Message.send(message,function(response){
     callback(response);
   });
 }

@@ -7,25 +7,14 @@ var cloudwatch        = require('cloudwatch');
 var sns               = require('sns');
 var ses               = require('ses');
 
-class Message {
-  constructor(message) {
-    this.message  = message;
-    this.method   = message.method;
-    this.body     = message.body;
-    this.url      = message.url;
-    this.source   = message.source;
-    this.dest     = message.dest;
-  }
-
-  send(callback) {
-    validate_tries_message(this.message, function(response){
-      console.log(response);
-      if(response.statusCode == 200)
-        callback(true);
-      else
-        callback(false);
-    });
-  }
+module.exports.send = function(message,callback){
+  validate_tries_message(message, function(response){
+    console.log("sended IN")
+    if(response.statusCode == 200)
+      callback(true);
+    else
+      callback(false);
+  });
 }
 
 var validate_tries_message = function(messageJSON, callback){
@@ -116,5 +105,3 @@ var send_message = function(messageJSON, callback){
       callback(response);
   });
 }
-
-module.exports = Message;
