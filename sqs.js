@@ -16,9 +16,11 @@ module.exports.get_list_trunk = function(callback){
     async.times(count, function (n, next){
       get_message_trunk_async(function(response){
         messagesJSON['Messages'].push(response);
-        next();
+        next(null, response);
       });
-    }, function() {
+    }, function(messages) {
+      console.log("messages");
+      console.log(messages);
       callback(messagesJSON);
     });
   });
