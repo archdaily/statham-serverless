@@ -12,8 +12,8 @@ var to = ['***REMOVED***'];
 var from = '***REMOVED***';
 
 // this sends the email
-module.exports.mail_message_generator = function(){
-  render_body_html(function(data){
+module.exports.mail_message_generator = function(message){
+  render_body_html(message, function(data){
     ses.sendEmail({ 
       Source: from, 
       Destination: { ToAddresses: to },
@@ -34,13 +34,15 @@ module.exports.mail_message_generator = function(){
   })  
 }
 
-var render_body_html = function(callback){
+var render_body_html = function(message, callback){
   fs.readFile('email.html', 'utf8', function (err,data) {
     if (err) {
       console.log(err);
     }
-    var metodo = 'variable de prueba';
-    var dataS = ejs.render(data, {metodo: metodo});
+    console.log(message);
+    var dataS = ejs.render(data, {
+        metodo: message.method
+      });
 
     callback(dataS);
   });
