@@ -9,7 +9,6 @@ var ses               = require('ses');
 
 module.exports.send = function(message,callback){
   validate_tries_message(message, function(response){
-    console.log("sended IN")
     if(response.statusCode == 200)
       callback(true);
     else
