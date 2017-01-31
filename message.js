@@ -7,21 +7,13 @@ var cloudwatch        = require('cloudwatch');
 var sns               = require('sns');
 var ses               = require('ses');
 
-class Message {
-  constructor(message) {
-    this.message  = message;
-    this.method   = message.method;
-    this.body     = message.body;
-    this.url      = message.url;
-    this.source   = message.source;
-    this.dest     = message.dest;
-  }
-
-  send() {
-    validate_tries_message(this.message, function(response){
-      console.log(response);
-    });
-  }
+module.exports.send = function(message,callback){
+  validate_tries_message(message, function(response){
+    if(response.statusCode == 200)
+      callback(true);
+    else
+      callback(false);
+  });
 }
 
 var validate_tries_message = function(messageJSON, callback){
@@ -44,6 +36,7 @@ var error_message_to_email = function(messageJSON, callback){
   var response = utilities.make_json_response(200,{
     "response" : "email sended"
   });
+  callback(response);
 }
 
 var get_string_body = function(messageJSON){
@@ -105,12 +98,9 @@ var send_message = function(messageJSON, callback){
       body.SNS = responseSNS;
       response.body = JSON.stringify(body);
       cloudwatch.enable_rule();
+      callback(response);
     }
     else
-      console.log("mensaje enviado:");
-      console.log(messageJSON);
       callback(response);
   });
 }
-
-module.exports = Message;

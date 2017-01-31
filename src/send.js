@@ -1,3 +1,4 @@
+
 'use strict';
 var Message     = require('message');
 var utilities   = require('utilities');
@@ -7,28 +8,56 @@ var cloudwatch  = require('cloudwatch');
 
 module.exports.send = (event, context, callback) => {
   if(event.source == 'aws.events'){
-    sqs.get_list_trunk(function(listMsg){
-      var all_sent = true;
-      async.each(listMsg.Messages, function (message, callback){
-        sqs.delete_msg_trunk(message.ReceiptHandle);
-        var messageOBJ = new Message(JSON.parse(message.Message));
-        messageOBJ.send();
-      }, function() {
-        sqs.get_count_trunk(function(count){
-          if(count == 0){
-            cloudwatch.disable_rule();
-          }
-        });
-      });
-    });
+    resend_from_trunk();
   }
   else{
     var messageJSON = utilities.fetch_request_message(event);
-    var messageOBJ = new Message(messageJSON);
-    var was_sent = messageOBJ.send();
-    var back = utilities.make_json_response(200,{
-      "Response" : "Statham received your message!"
+    send_message(messageJSON, function(sent){
+      if(sent){
+        callback(null, endpoint_response("Message sent"));
+      }
+      else{
+        callback(null, endpoint_response(
+          "The message couldn't be sent, added to the pending list"
+        ));
+      }
     });
-    callback(null, back);
   }
 };
+
+var endpoint_response = function(status){
+  var response = utilities.make_json_response(200,{
+    "Response" : "Statham received your message!",
+    "Status" : status
+  });
+  return response;
+}
+
+var resend_from_trunk = function(){
+  sqs.get_list_trunk(function(listMsg){
+    process_list_concurrently(listMsg);
+  });
+}
+
+var process_list_concurrently = function(listMsg){
+  async.every(listMsg.Messages, function(message, next){
+    process_message(message, function(sent){
+      next(null, sent);
+    });
+  }, function(sent, result) {
+    if(result) cloudwatch.disable_rule();
+  });
+}
+
+var process_message = function(message, callback){
+  sqs.delete_msg_trunk(message.ReceiptHandle);
+  send_message(JSON.parse(message.Message), function(sent){
+    callback(sent);
+  });
+}
+
+var send_message = function(message, callback){
+  Message.send(message,function(response){
+    callback(response);
+  });
+}
