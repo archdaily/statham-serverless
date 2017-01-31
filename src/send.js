@@ -8,44 +8,56 @@ var cloudwatch  = require('cloudwatch');
 
 module.exports.send = (event, context, callback) => {
   if(event.source == 'aws.events'){
-    sqs.get_list_trunk(function(listMsg){
-      async.every(listMsg.Messages, function(message, next){
-        sqs.delete_msg_trunk(message.ReceiptHandle);
-        send_message(JSON.parse(message.Message), function(sent){
-          next(null, sent);
-        });
-      }, function(sent, result) {
-        if(result) check_sqs();
-      });
-    });
+    resend_from_trunk();
   }
   else{
     var messageJSON = utilities.fetch_request_message(event);
     send_message(messageJSON, function(sent){
       if(sent){
-        var response = utilities.make_json_response(200,{
-          "Response" : "Statham received your message!"
-          "Status" : "Message sent"
-        });
-        callback(null, response);
+        callback(null, endpoint_response("Message sent"));
       }
       else{
-        var response = utilities.make_json_response(200,{
-          "Response" : "Statham received your message!"
-          "Status" : "The message couldn't be sent, added to the pending list"
-        });
-        callback(null, response);
+        callback(null, endpoint_response(
+          "The message couldn't be sent, added to the pending list"
+        ));
       }
     });
   }
 };
 
+var endpoint_response = function(status){
+  var response = utilities.make_json_response(200,{
+    "Response" : "Statham received your message!",
+    "Status" : status
+  });
+  return response;
+}
+
+var resend_from_trunk = function(){
+  sqs.get_list_trunk(function(listMsg){
+    process_list_concurrently(listMsg);
+  });
+}
+
+var process_list_concurrently = function(listMsg){
+  async.every(listMsg.Messages, function(message, next){
+    process_message(message, function(sent){
+      next(null, sent);
+    });
+  }, function(sent, result) {
+    if(result) cloudwatch.disable_rule();
+  });
+}
+
+var process_message = function(message, callback){
+  sqs.delete_msg_trunk(message.ReceiptHandle);
+  send_message(JSON.parse(message.Message), function(sent){
+    callback(sent);
+  });
+}
+
 var send_message = function(message, callback){
   Message.send(message,function(response){
     callback(response);
   });
-}
-
-var check_sqs = function(){
-  cloudwatch.disable_rule();
 }
