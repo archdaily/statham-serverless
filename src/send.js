@@ -8,53 +8,56 @@ var cloudwatch  = require('cloudwatch');
 
 module.exports.send = (event, context, callback) => {
   if(event.source == 'aws.events'){
-    console.log("getting list trunk...");
-
-    sqs.get_list_trunk(function(listMsg){
-      console.log("list trunk:");
-      console.log(listMsg);
-
-      async.each(listMsg.Messages, function(message, next){
-        console.log("message");
-        console.log(message);
-        send_message(JSON.parse(message.Message), function(sent){
-          sqs.delete_msg_trunk(message.ReceiptHandle);
-          console.log("message sended OUT");
-          next();
-        });
-      }, function(sent) {
-        console.log("finish!");
-        check_sqs();
-      });
-    });
+    resend_from_trunk();
   }
   else{
-    console.log("sending message arrived from HTTP");
     var messageJSON = utilities.fetch_request_message(event);
-    var messageOBJ = new Message(messageJSON);
-    messageOBJ.send();
-    var back = utilities.make_json_response(200,{
-      "Response" : "Statham received your message!"
+    send_message(messageJSON, function(sent){
+      if(sent){
+        callback(null, endpoint_response("Message sent"));
+      }
+      else{
+        callback(null, endpoint_response(
+          "The message couldn't be sent, added to the pending list"
+        ));
+      }
     });
-    callback(null, back);
   }
 };
 
-var send_message = function(message){
-  var messageOBJ = new Message(message);
-  messageOBJ.send(function(response){
-    console.log(response);
-    callback(response);
+var endpoint_response = function(status){
+  var response = utilities.make_json_response(200,{
+    "Response" : "Statham received your message!",
+    "Status" : status
+  });
+  return response;
+}
+
+var resend_from_trunk = function(){
+  sqs.get_list_trunk(function(listMsg){
+    process_list_concurrently(listMsg);
   });
 }
 
-var check_sqs = function(){
-  sqs.get_count_trunk(function(count){
-    console.log("count trunk:");
-    console.log(count);
-    if(count == 0){
-      cloudwatch.disable_rule();
-      console.log("rule disabled!");
-    }
+var process_list_concurrently = function(listMsg){
+  async.every(listMsg.Messages, function(message, next){
+    process_message(message, function(sent){
+      next(null, sent);
+    });
+  }, function(sent, result) {
+    if(result) cloudwatch.disable_rule();
+  });
+}
+
+var process_message = function(message, callback){
+  sqs.delete_msg_trunk(message.ReceiptHandle);
+  send_message(JSON.parse(message.Message), function(sent){
+    callback(sent);
+  });
+}
+
+var send_message = function(message, callback){
+  Message.send(message,function(response){
+    callback(response);
   });
 }
