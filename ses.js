@@ -5,6 +5,7 @@ var secretAccessKey   = '***REMOVED***';
 AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
 var ses               = new AWS.SES();
 var fs                = require('fs');
+var ejs               = require('ejs');
 // send to list
 var to = ['***REMOVED***'];
 // this must relate to a verified SES account
@@ -38,7 +39,10 @@ var render_body_html = function(callback){
     if (err) {
       console.log(err);
     }
-    callback(data);
+    var metodo = 'variable de prueba';
+    var dataS = ejs.render(data, {metodo: metodo});
+
+    callback(dataS);
   });
 
 }

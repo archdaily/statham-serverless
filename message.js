@@ -32,7 +32,7 @@ var validate_tries_message = function(messageJSON, callback){
 }
 
 var error_message_to_email = function(messageJSON, callback){
-  ses.mail_message_generator();
+  ses.mail_message_generator(messageJSON);
   var response = utilities.make_json_response(200,{
     "response" : "email sended"
   });
