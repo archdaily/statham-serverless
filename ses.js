@@ -41,7 +41,10 @@ var render_body_html = function(message, callback){
     }
     console.log(message);
     var dataS = ejs.render(data, {
-        metodo: message.method
+        method: message.method,
+        destination : message.destination,
+        source: message.source,
+        url: message.url
       });
 
     callback(dataS);

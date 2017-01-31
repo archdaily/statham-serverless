@@ -16,10 +16,19 @@ module.exports.send = function(message,callback){
   });
 }
 
+var add_attributes = function(messageJSON){
+  var urlDest = url.parse(messageJSON.url);
+  messageJSON.destination = urlDest.pathname;
+  return messageJSON;
+}
+
+
 var validate_tries_message = function(messageJSON, callback){
   if(!messageJSON.tries)
     messageJSON.tries = 0;
   messageJSON.tries += 1;
+
+  messageJSON = add_attributes(messageJSON);
 
   if(messageJSON.tries > 5)
     error_message_to_email(messageJSON, function(response){
