@@ -33,12 +33,21 @@ module.exports.send = (event, context, callback) => {
     console.log("sending message arrived from HTTP");
     var messageJSON = utilities.fetch_request_message(event);
     send_message(messageJSON, function(sent){
-
+      if(sent){
+        var response = utilities.make_json_response(200,{
+          "Response" : "Statham received your message!"
+          "Status" : "Message sent"
+        });
+        callback(null, response);
+      }
+      else{
+        var response = utilities.make_json_response(200,{
+          "Response" : "Statham received your message!"
+          "Status" : "The message couldn't be sent, added to the pending list"
+        });
+        callback(null, response);
+      }
     });
-    var back = utilities.make_json_response(200,{
-      "Response" : "Statham received your message!"
-    });
-    callback(null, back);
   }
 };
 
@@ -49,12 +58,5 @@ var send_message = function(message, callback){
 }
 
 var check_sqs = function(){
-  sqs.get_count_trunk(function(count){
-    console.log("count trunk:");
-    console.log(count);
-    if(count == 0){
-      cloudwatch.disable_rule();
-      console.log("rule disabled!");
-    }
-  });
+  cloudwatch.disable_rule();
 }
