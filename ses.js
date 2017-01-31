@@ -44,7 +44,8 @@ var render_body_html = function(message, callback){
         method: message.method,
         destination : message.destination,
         source: message.source,
-        url: message.url
+        url: message.url,
+        error: message.error
       });
 
     callback(dataS);
