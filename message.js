@@ -17,24 +17,38 @@ class Message {
     this.dest     = message.dest;
   }
 
-  send() {
-    validate_tries_message(this.message);
+  send(callback) {
+    validate_tries_message(this.message, function(response){
+      console.log(response);
+      if(response.statusCode == 200)
+        callback(true);
+      else
+        callback(false);
+    });
   }
 }
 
-var validate_tries_message = function(messageJSON){
+var validate_tries_message = function(messageJSON, callback){
   if(!messageJSON.tries)
     messageJSON.tries = 0;
   messageJSON.tries += 1;
 
   if(messageJSON.tries > 5)
-    error_message_to_email(messageJSON);
+    error_message_to_email(messageJSON, function(response){
+      callback(response);
+    });
   else
-    send_message(messageJSON);
+    send_message(messageJSON, function(response){
+      callback(response);
+    });
 }
 
-var error_message_to_email = function(messageJSON){
+var error_message_to_email = function(messageJSON, callback){
   ses.mail_message_generator();
+  var response = utilities.make_json_response(200,{
+    "response" : "email sended"
+  });
+  callback(response);
 }
 
 var get_string_body = function(messageJSON){
@@ -82,7 +96,7 @@ var make_http_request = function(options, data, callback){
   req.end();
 }
 
-var send_message = function(messageJSON){
+var send_message = function(messageJSON, callback){
   var postData = get_string_body(messageJSON);
   var options = serialize_options(messageJSON);
   make_http_request(options,postData,function(response){
@@ -96,7 +110,10 @@ var send_message = function(messageJSON){
       body.SNS = responseSNS;
       response.body = JSON.stringify(body);
       cloudwatch.enable_rule();
+      callback(response);
     }
+    else
+      callback(response);
   });
 }
 
