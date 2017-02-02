@@ -16,10 +16,19 @@ module.exports.send = function(message,callback){
   });
 }
 
+var add_attributes = function(messageJSON){
+  var urlDest = url.parse(messageJSON.url);
+  messageJSON.destination = urlDest.pathname;
+  return messageJSON;
+}
+
+
 var validate_tries_message = function(messageJSON, callback){
   if(!messageJSON.tries)
     messageJSON.tries = 0;
   messageJSON.tries += 1;
+
+  messageJSON = add_attributes(messageJSON);
 
   if(messageJSON.tries > 5)
     error_message_to_email(messageJSON, function(response){
@@ -32,7 +41,7 @@ var validate_tries_message = function(messageJSON, callback){
 }
 
 var error_message_to_email = function(messageJSON, callback){
-  ses.mail_message_generator();
+  ses.mail_message_generator(messageJSON);
   var response = utilities.make_json_response(200,{
     "response" : "email sended"
   });
