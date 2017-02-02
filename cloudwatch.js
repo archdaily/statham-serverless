@@ -1,16 +1,18 @@
 'use strict';
 
-var AWS               = require('aws-sdk');
-var Key_Id            = 'A***REMOVED***';
-var secretAccessKey   = '***REMOVED***';
+var AWS                 = require('aws-sdk');
+var Key_Id              = 'A***REMOVED***';
+var secretAccessKey     = '***REMOVED***';
 AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
-var cloudwatchevents  = new AWS.CloudWatchEvents();
-var lambda            = new AWS.Lambda();
+var cloudwatchevents    = new AWS.CloudWatchEvents();
+var lambda              = new AWS.Lambda();
+var scheduleExpression  = 'cron(0/1 * * * ? *)';
+var lambdaArn           = "arn:aws:lambda:us-west-2:451967854914:function:msgService-dev-send";
 
 module.exports.enable_rule = function(){
   var params = {
     Name: 'Statham-cycle',
-    ScheduleExpression: 'cron(0/1 * * * ? *)',
+    ScheduleExpression: scheduleExpression,
     State: 'ENABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
@@ -29,7 +31,7 @@ module.exports.enable_rule = function(){
 module.exports.disable_rule = function(){
   var params = {
     Name: 'Statham-cycle',
-    ScheduleExpression: 'cron(0/1 * * * ? *)',
+    ScheduleExpression: scheduleExpression,
     State: 'DISABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
@@ -42,8 +44,8 @@ var put_lambda_target = function(){
     Rule: 'Statham-cycle',
     Targets: [
       {
-        Arn: "arn:aws:lambda:us-west-2:451967854914:function:msgService-dev-send",
-        Id: "Id243536924640"
+        Arn: lambdaArn,
+        Id: "Lambda-Worker"
       }
     ]
   };
@@ -55,7 +57,7 @@ var put_lambda_target = function(){
 var add_permission_trigger_lambda = function(ruleArn){
   var params = {
     Action: "lambda:InvokeFunction",
-    FunctionName: "arn:aws:lambda:us-west-2:451967854914:function:msgService-dev-send",
+    FunctionName: lambdaArn,
     Principal: "events.amazonaws.com",
     SourceArn: ruleArn,
     StatementId: "ID-1"
