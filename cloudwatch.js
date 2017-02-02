@@ -16,8 +16,12 @@ module.exports.enable_rule = function(){
   cloudwatchevents.putRule(params, function(err, data) {
     if (err) console.log(err, err.stack);
     else{
-      put_lambda_target();
-      add_permission_trigger_lambda(data.RuleArn);
+      exist_rule(function(exist){
+        if(!exist){
+          put_lambda_target();
+          add_permission_trigger_lambda(data.RuleArn);
+        }
+      });
     }
   });
 }
@@ -58,6 +62,22 @@ var add_permission_trigger_lambda = function(ruleArn){
   };
   lambda.addPermission(params, function(err, data) {
     if (err) console.log(err, err.stack);
-});
+  });
+}
 
+var exist_rule = function(callback){
+  var params = {
+    Limit: 1,
+    NamePrefix: 'Statham-cycle'
+  };
+  cloudwatchevents.listRules(params, function(err, data) {
+    if (err){
+      console.log(err, err.stack);
+      callback(false);
+    }
+    else{
+      if(data.Rules.length == 1) callback(true);
+      else callback(false);
+    }
+  });
 }
