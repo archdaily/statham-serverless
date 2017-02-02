@@ -19,7 +19,7 @@ module.exports.mail_message_generator = function(message){
       Destination: { ToAddresses: to },
       Message: {
           Subject:{
-             Data: 'Mensaje de Statham'
+             Data: 'The Transporter'
           },
           Body: {
               Html: {
@@ -39,16 +39,28 @@ var render_body_html = function(message, callback){
     if (err) {
       console.log(err);
     }
-    console.log(message);
-    var dataS = ejs.render(data, {
-        method: message.method,
+    var data_message = ejs.render(data, {
+        method      : message.method,
         destination : message.destination,
-        source: message.source,
-        url: message.url,
-        error: message.error
-      });
-
-    callback(dataS);
+        source      : message.source,
+        url         : message.url,
+        error       : message.error,
+        body        : JSON.stringify(message.body)
+    });   
+    console.log(data_message);
+    ///data_message = data_message.replace(',', '<br>');
+    ///console.log(data_message);
+    callback(data_message);
   });
 
 }
+
+
+
+
+
+
+
+
+
+
