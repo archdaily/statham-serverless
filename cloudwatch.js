@@ -10,21 +10,21 @@ var scheduleExpression  = 'cron(0/1 * * * ? *)';
 var lambdaArn           = "arn:aws:lambda:us-west-2:451967854914:function:msgService-dev-send";
 
 module.exports.enable_rule = function(){
-  var params = {
-    Name: 'Statham-cycle',
-    ScheduleExpression: scheduleExpression,
-    State: 'ENABLED'
-  };
-  cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log(err, err.stack);
-    else{
-      exist_rule(function(exist){
+  exist_rule(function(exist){
+    var params = {
+      Name: 'Statham-cycle',
+      ScheduleExpression: scheduleExpression,
+      State: 'ENABLED'
+    };
+    cloudwatchevents.putRule(params, function(err, data) {
+      if (err) console.log(err, err.stack);
+      else{
         if(!exist){
           put_lambda_target();
           add_permission_trigger_lambda(data.RuleArn);
         }
-      });
-    }
+      }
+    });
   });
 }
 
