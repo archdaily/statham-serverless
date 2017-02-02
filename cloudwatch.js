@@ -14,6 +14,9 @@ module.exports.enable_rule = function(){
   };
   cloudwatchevents.putRule(params, function(err, data) {
     if (err) console.log(err, err.stack);
+    else{
+      put_lambda_target();
+    }
   });
 }
 
@@ -26,5 +29,19 @@ module.exports.disable_rule = function(){
   cloudwatchevents.putRule(params, function(err, data) {
     if (err) console.log(err, err.stack);
   });
+}
 
+var put_lambda_target = function(){
+  var params = {
+    Rule: 'Statham-cycle',
+    Targets: [
+      {
+        Arn: "arn:aws:lambda:us-west-2:451967854914:function:msgService-dev-send",
+        Id: "1"
+      }
+    ]
+  };
+  cloudwatchevents.putTargets(params, function(err, data) {
+    if (err) console.log(err, err.stack);
+  });
 }
