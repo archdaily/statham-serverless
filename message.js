@@ -6,8 +6,9 @@ var utilities         = require('utilities');
 var cloudwatch        = require('cloudwatch');
 var sns               = require('sns');
 var ses               = require('ses');
+var sqs               = require('sqs');
 
-module.exports.send = function(message,callback){
+module.exports.send = function(message, callback){
   validate_tries_message(message, function(response){
     if(response.statusCode == 200)
       callback(true);
@@ -46,7 +47,7 @@ var get_string_body = function(messageJSON){
 var serialize_options = function(messageJSON){
   var postData = get_string_body(messageJSON);
   var urlDest = url.parse(messageJSON.url);
-  messageJSON.dest = urlDest.pathname;
+  messageJSON.destination = urlDest.pathname;
   var options = {
     hostname: urlDest.host,
     port: urlDest.port,
@@ -91,12 +92,7 @@ var send_message = function(messageJSON, callback){
     var body = JSON.parse(response.body);
     if(body.error){
       messageJSON.error = body.error;
-      var responseSNS = sns.publish_message_sns(
-          JSON.stringify(messageJSON),
-          "Message not delivered From Lambda",
-          'arn:aws:sns:us-west-2:451967854914:Statham-notification');
-      body.SNS = responseSNS;
-      response.body = JSON.stringify(body);
+      sqs.send_msg_trunk(messageJSON);
       cloudwatch.enable_rule();
       callback(response);
     }
