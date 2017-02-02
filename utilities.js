@@ -16,7 +16,38 @@ module.exports.fetch_request_message = function(event){
   else{
     messageJSON = JSON.parse(event.body);
     messageJSON.source = event.headers.Origin;
+    messageJSON.id = event.requestContext.requestId;
   }
   return messageJSON;
 }
 
+module.exports.get_random_char = function(){
+  var charSet = char_set();
+  var char = charSet.charAt(get_random_number(0, charSet.length));
+  return char;
+}
+
+var get_random_number = function(lowerBound,upperBound){
+  var random = Math.floor(Math.random() * (upperBound - lowerBound)) + lowerBound;
+  return random;
+}
+
+var char_set = function(){
+  var charSet = "";
+  charSet += number_chars();
+  charSet += lower_chars();
+  charSet += upper_chars();
+  return charSet;
+}
+
+var lower_chars = function(){
+  return "abcdefghijklmnopqrstuvwxyz";
+}
+
+var upper_chars = function(){
+  return "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+}
+
+var number_chars = function(){
+  return "0123456789";
+}

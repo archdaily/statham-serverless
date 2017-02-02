@@ -50,8 +50,7 @@ var process_list_concurrently = function(listMsg){
 }
 
 var process_message = function(message, callback){
-  sqs.delete_msg_trunk(message.ReceiptHandle);
-  send_message(JSON.parse(message.Message), function(sent){
+  send_message(message.Message, function(sent){
     callback(sent);
   });
 }
