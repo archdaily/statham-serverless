@@ -3,8 +3,6 @@
 var https             = require('https');
 var url               = require('url');
 var utilities         = require('utilities');
-var cloudwatch        = require('cloudwatch');
-var sns               = require('sns');
 var ses               = require('ses');
 var sqs               = require('sqs');
 
@@ -102,7 +100,6 @@ var send_message = function(messageJSON, callback){
     if(body.error){
       messageJSON.error = body.error;
       sqs.send_msg_trunk(messageJSON);
-      cloudwatch.enable_rule();
       callback(response);
     }
     else

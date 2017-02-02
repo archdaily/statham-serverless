@@ -9,7 +9,7 @@ var cloudwatchevents  = new AWS.CloudWatchEvents();
 module.exports.enable_rule = function(){
   var params = {
     Name: 'Statham-cycle',
-    ScheduleExpression: 'cron(0/2 * * * ? *)',
+    ScheduleExpression: 'cron(0/1 * * * ? *)',
     State: 'ENABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
@@ -20,7 +20,7 @@ module.exports.enable_rule = function(){
 module.exports.disable_rule = function(){
   var params = {
     Name: 'Statham-cycle',
-    ScheduleExpression: 'cron(0/2 * * * ? *)',
+    ScheduleExpression: 'cron(0/1 * * * ? *)',
     State: 'DISABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
