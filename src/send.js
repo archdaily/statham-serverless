@@ -17,6 +17,7 @@ module.exports.send = (event, context, callback) => {
         callback(null, endpoint_response("Message sent"));
       }
       else{
+        cloudwatch.enable_rule();
         callback(null, endpoint_response(
           "The message couldn't be sent, added to the pending list"
         ));
@@ -46,6 +47,7 @@ var process_list_concurrently = function(listMsg){
     });
   }, function(sent, result) {
     if(result) cloudwatch.disable_rule();
+    else cloudwatch.enable_rule();
   });
 }
 
