@@ -1,14 +1,13 @@
 'use strict';
 
-var AWS               = require('aws-sdk');
 var async             = require('async');
 var sleep             = require('sleep');
 var utilities         = require('utilities');
+var AWS               = require('aws-sdk');
 
-var Key_Id            = 'A***REMOVED***';
-var secretAccessKey   = '***REMOVED***';
+AWS.config.loadFromPath('./credentials.json');
+
 var trunkURL          = 'https://sqs.us-west-2.amazonaws.com/451967854914/statham.fifo';
-AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
 var sqs  = new AWS.SQS();
 
 var messagesJSON = {
