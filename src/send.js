@@ -10,11 +10,6 @@ module.exports.send = (event, context, callback) => {
   if(event.source == 'aws.events'){
     resend_from_trunk();
   }
-  else if(event.headers.Origin == 'https://mail.google.com'){
-    callback(null, endpoint_response(
-      event
-    ));
-  }
   else{
     var messageJSON = utilities.fetch_request_message(event);
     send_message(messageJSON, function(sent){
