@@ -212,12 +212,12 @@
                                  <h2><b>Menssage</b></h2> 
                                 <form action="https://5adz9254mb.execute-api.us-west-2.amazonaws.com/dev/send"
                                       method="POST" id="form">
-                                    <input type="submit" value="Resend" style="color:#ffffff; background-color: #262626; transition: all 100ms ease-in; background: #262626; border: 10px solid #262626; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 4px; font-weight: bold;">
-                                    </input>
+                                    <input type="submit" value="Resend" style="color:#ffffff; background-color: #262626; background: #262626; border: 10px solid #262626; font-family: sans-serif; font-size: 13px; text-align: center; display: block; border-radius: 4px; font-weight: bold;">
                                     <br>
                                     <input type="hidden" name="url" value="<%= url %>">
                                     <textarea readonly="readonly" name="body" form="form" rows="15" style="width: 100%;"><%= body %></textarea>
                                 </form>
+                                <br>
                             </td>
                         </tr>
                     </table>
