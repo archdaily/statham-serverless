@@ -1,4 +1,5 @@
 'use strict';
+var origin_mail = "https://mail.google.com";
 
 module.exports.make_json_response = function(statusCode,body){
   var response = {
@@ -10,8 +11,14 @@ module.exports.make_json_response = function(statusCode,body){
 
 module.exports.fetch_request_message = function(event){
   var messageJSON;
-  if(event.source == 'aws.events'){
-    messageJSON = JSON.parse(event.Records[0].Sns.Message);
+  if(event.headers.Origin == origin_mail){
+    var decoded_message = url_decode(event);
+    messageJSON = {
+      "method"   : event.httpMethod,
+      "url"      : get_url(decoded_message),
+      "body"     : get_body(decoded_message)
+    }
+    
   }
   else{
     messageJSON = JSON.parse(event.body);
@@ -50,4 +57,17 @@ var upper_chars = function(){
 
 var number_chars = function(){
   return "0123456789";
+}
+
+var url_decode = function(code){
+  var decoded_body = decodeURI(code.body);
+  return decoded_body;
+}
+
+var get_url = function(decoded_message){
+
+}
+
+var get_body = function(decoded_message){
+  
 }
