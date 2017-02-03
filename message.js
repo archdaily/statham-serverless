@@ -1,38 +1,33 @@
 'use strict';
+
 var https             = require('https');
 var url               = require('url');
-var AWS               = require('aws-sdk');
 var utilities         = require('utilities');
-var cloudwatch        = require('cloudwatch');
+var ses               = require('ses');
+var sqs               = require('sqs');
 
-class Message {
-
-  constructor(message) {
-      this.message  = message;
-
-      this.method   = message.method;
-      this.body     = message.body;
-      this.url      = message.url;
-      this.source   = message.source;
-      this.dest     = message.dest;
-  }
-
-  send() {
-    validate_tries_message(this.message, function(response){
-      if(response.statusCode == 200)
-        return(true);
-      else
-        return(false);
-    });
-  }
+module.exports.send = function(message, callback){
+  validate_tries_message(message, function(response){
+    if(response.statusCode == 200)
+      callback(true);
+    else
+      callback(false);
+  });
 }
 
-// Code Message
+var add_attributes = function(messageJSON){
+  var urlDest = url.parse(messageJSON.url);
+  messageJSON.destination = urlDest.pathname;
+  return messageJSON;
+}
+
 
 var validate_tries_message = function(messageJSON, callback){
   if(!messageJSON.tries)
     messageJSON.tries = 0;
   messageJSON.tries += 1;
+
+  messageJSON = add_attributes(messageJSON);
 
   if(messageJSON.tries > 5)
     error_message_to_email(messageJSON, function(response){
@@ -44,51 +39,22 @@ var validate_tries_message = function(messageJSON, callback){
     });
 }
 
-var mail_message_generator = function(messageJSON){
-  var message = `
-Statham tried to transporting five times the message but the destination couldn't be reached.
-Details:
-
-    Method: ${messageJSON.method}
-    URL destination: ${messageJSON.url}
-    Source: ${messageJSON.source}
-    Destination path: ${messageJSON.dest}
-
-Body:
-${JSON.stringify(messageJSON.body, null, 2)}
-
-Error: ${messageJSON.error}
-`;
-  return message;
-}
-
 var error_message_to_email = function(messageJSON, callback){
-  var message = mail_message_generator(messageJSON);
-  publish_message_sns(
-    serialize_sns(
-      message,
-      "A message reached the maximum number of sending attempts",
-      'arn:aws:sns:us-west-2:451967854914:Statham-mailer'
-      ),
-      function(responseSNS){
-        var response = utilities.make_json_response(200,{
-          "SNS" : responseSNS
-        });
-        callback(response);
-      }
-  );
+  ses.mail_message_generator(messageJSON);
+  var response = utilities.make_json_response(200,{
+    "response" : "email sended"
+  });
+  callback(response);
 }
 
 var get_string_body = function(messageJSON){
   return JSON.stringify(messageJSON.body);
 }
 
-// Code SNS
-
 var serialize_options = function(messageJSON){
   var postData = get_string_body(messageJSON);
   var urlDest = url.parse(messageJSON.url);
-  messageJSON.dest = urlDest.pathname;
+  messageJSON.destination = urlDest.pathname;
   var options = {
     hostname: urlDest.host,
     port: urlDest.port,
@@ -100,17 +66,6 @@ var serialize_options = function(messageJSON){
     }
   };
   return options;
-}
-
-var publish_message_sns = function(params, callback){
-  var Key_Id            = 'A***REMOVED***';
-  var secretAccessKey   = '***REMOVED***';
-  AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
-  var sns = new AWS.SNS();
-  sns.publish(params, function(errSNS, dataSNS){
-    var responseSNS = get_response(errSNS, dataSNS);
-    callback(responseSNS);
-  });
 }
 
 var make_http_request = function(options, data, callback){
@@ -137,26 +92,6 @@ var make_http_request = function(options, data, callback){
   req.end();
 }
 
-var serialize_sns = function(message, subject, topic){
-  var snsParams = {
-    Message: message,
-    Subject: subject,
-    TopicArn: topic
-  };
-  return snsParams;
-}
-
-var get_response = function(errSNS, dataSNS){
-  var responseSNS = "";
-  if(errSNS)
-    responseSNS = 'Send SNS error: ' + errSNS;
-  else
-    responseSNS = 'Data: ' + dataSNS;
-  return responseSNS;
-}
-
-// SEND MESSAGE
-
 var send_message = function(messageJSON, callback){
   var postData = get_string_body(messageJSON);
   var options = serialize_options(messageJSON);
@@ -164,21 +99,10 @@ var send_message = function(messageJSON, callback){
     var body = JSON.parse(response.body);
     if(body.error){
       messageJSON.error = body.error;
-      publish_message_sns(
-        serialize_sns(
-          JSON.stringify(messageJSON),
-          "Message not delivered From Lambda",
-          'arn:aws:sns:us-west-2:451967854914:Statham-notification'),
-        function(responseSNS){
-          body.SNS = responseSNS;
-          response.body = JSON.stringify(body);
-          callback(response);
-      });
-      cloudwatch.enable_rule();
+      sqs.send_msg_trunk(messageJSON);
+      callback(response);
     }
     else
       callback(response);
   });
 }
-
-module.exports = Message;
