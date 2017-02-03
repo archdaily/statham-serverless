@@ -12,19 +12,19 @@ module.exports.make_json_response = function(statusCode,body){
 module.exports.fetch_request_message = function(event){
   var messageJSON;
   if(event.headers.Origin == origin_mail){
-    var decoded_message = url_decode(event);
+    var decoded_message = url_decode(event.body);
+    var decoded_json = url_to_json(decoded_message);
     messageJSON = {
       "method"   : event.httpMethod,
-      "url"      : get_url(decoded_message),
-      "body"     : get_body(decoded_message)
+      "url"      : get_url(decoded_json),
+      "body"     : get_body(decoded_json)
     }
-    
   }
   else{
     messageJSON = JSON.parse(event.body);
-    messageJSON.source = event.headers.Origin;
-    messageJSON.id = event.requestContext.requestId;
   }
+  messageJSON.source = event.headers.Origin;
+  messageJSON.id = event.requestContext.requestId;
   return messageJSON;
 }
 
@@ -60,14 +60,26 @@ var number_chars = function(){
 }
 
 var url_decode = function(code){
-  var decoded_body = decodeURI(code.body);
+  var decoded_body = decodeURIComponent(code);
   return decoded_body;
 }
 
-var get_url = function(decoded_message){
+var url_to_json = function(code){
+  var hash;
+  var myJson = {};
+  var hashes = code.slice(code.indexOf('?') + 1).split('&');
+  for (var i = 0; i < hashes.length; i++) {
+      hash = hashes[i].split('=');
+      myJson[hash[0]] = hash[1];
+  }
+  return myJson;
+}
+
+var get_url = function(decoded_json){
+  return decoded_json.url;
 
 }
 
-var get_body = function(decoded_message){
-  
+var get_body = function(decoded_json){
+  return decoded_json.body;
 }
