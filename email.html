@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"> <!-- utf-8 works for most cases -->
-	<meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
-    <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<title>Statham</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+	<meta charset="utf-8"> 
+	<meta name="viewport" content="width=device-width"> 
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+    <meta name="x-apple-disable-message-reformatting"> 
+	<title>Statham</title> 
 
 	<!-- Web Font / @font-face : BEGIN -->
 	<!-- NOTE: If web fonts are not required, lines 10 - 27 can be safely removed. -->
@@ -29,9 +28,6 @@
 	
 	<!-- CSS Reset -->
     <style>
-
-		/* What it does: Remove spaces around the email design added by some email clients. */
-		/* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
         html,
         body {
 	        margin: 0 auto !important;
@@ -92,10 +88,6 @@
         .button-link {
             text-decoration: none !important;
         }
-      
-        /* What it does: Removes right gutter in Gmail iOS app: https://github.com/TedGoas/Cerberus/issues/89  */
-        /* Create one of these media queries for each additional viewport size you'd like to fix */
-        /* Thanks to Eric Lepetit @ericlepetitsf) for help troubleshooting */
         @media only screen and (min-device-width: 375px) and (max-device-width: 413px) { /* iPhone 6 and 6+ */
             .email-container {
                 min-width: 375px !important;
@@ -104,10 +96,8 @@
     
     </style>
     
-    <!-- Progressive Enhancements -->
     <style>
 
-        /* Media Queries */
         @media screen and (max-width: 600px) {
 
             .email-container {
@@ -115,7 +105,6 @@
                 margin: auto !important;
             }
 
-            /* What it does: Forces elements to resize to the full width of their container. Useful for resizing images beyond their max-width. */
             .fluid {
                 max-width: 100% !important;
                 height: auto !important;
@@ -123,7 +112,6 @@
                 margin-right: auto !important;
             }
 
-            /* What it does: Forces table cells into full-width rows. */
             .stack-column,
             .stack-column-center {
                 display: block !important;
@@ -131,12 +119,11 @@
                 max-width: 100% !important;
                 direction: ltr !important;
             }
-            /* And center justify these ones. */
+
             .stack-column-center {
                 text-align: center !important;
             }
         
-            /* What it does: Generic utility class for centering. Useful for images, buttons, and nested tables. */
             .center-on-narrow {
                 text-align: center !important;
                 display: block !important;
@@ -155,39 +142,24 @@
 </head>
 <body width="100%" bgcolor="#ffffff" style="margin: 0; mso-line-height-rule: exactly;">
     <center style="width: 100%; background: #ffffff;">
-
-        <!-- Visually Hidden Preheader Text : BEGIN -->
         <div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">
         </div>
-        <!-- Visually Hidden Preheader Text : END -->
-
-        <!-- Clear Spacer : BEGIN -->
         <tr>
             <td height="5" style="font-size: 0; line-height: 0;">
                 &nbsp;
             </td>
         </tr>
-        
-        <!-- Email Body : BEGIN -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto;" class="email-container">
-            
-            <!-- Hero Image, Flush : BEGIN -->
             <tr>
 				<td bgcolor="#ffffff">
 					<img src="https://s3-us-west-2.amazonaws.com/statham-img/report2.png" width="600" height="172" alt="alt_text" border="0" align="center" class="fluid" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 				</td>
             </tr>
-            <!-- Hero Image, Flush : END -->
-
-
-            <!-- Clear Spacer : BEGIN -->
             <tr>
             <td height="5" style="font-size: 0; line-height: 0;">
                 &nbsp;
             </td>
             </tr>
-
-            <!-- Container Text 1: BEGIN -->
             <tr>
                 <td bgcolor="#ffffff" style="padding: 20px 40px; text-align: justify; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #262626;">
                     Statham has not been able to deliver, the details of the work will be detailed below and the message.
@@ -195,15 +167,11 @@
                     <b>Until the next transport.</b>
                 </td>
             </tr>
-
-            <!-- Clear Spacer : BEGIN -->
             <tr>
                 <td height="5" style="font-size: 0; line-height: 0;">
                     &nbsp;
                 </td>
             </tr>
-
-            <!-- Container Text 2: BEGIN -->
             <tr>
                 <td bgcolor="#f1f1f1">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -257,9 +225,6 @@
             </tr>
 
         </table>
-        <!-- Email Body : END -->
-          
-        <!-- Email Footer : BEGIN -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto;" class="email-container">
             <tr>
                 <td style="padding: 40px 10px;width: 100%;font-size: 12px; font-family: sans-serif; line-height:18px; text-align: center;" class="x-gmail-data-detectors">
@@ -271,7 +236,6 @@
                 </td>
             </tr>
         </table>
-        <!-- Email Footer : END -->
     </center>
 </body>
 </html>
