@@ -1,4 +1,7 @@
 'use strict';
+var fs                = require('fs');
+var ejs               = require('ejs');
+
 var origin_mail = "https://mail.google.com";
 
 module.exports.make_json_response = function(statusCode,body){
@@ -15,6 +18,7 @@ module.exports.fetch_request_message = function(event){
     var decoded_message = url_decode(event.body);
     var decoded_json = url_to_json(decoded_message);
     messageJSON = {
+      "email"    : 1,
       "method"   : event.httpMethod,
       "url"      : get_url(decoded_json),
       "body"     : get_body(decoded_json)
@@ -77,9 +81,34 @@ var url_to_json = function(code){
 
 var get_url = function(decoded_json){
   return decoded_json.url;
-
 }
 
 var get_body = function(decoded_json){
   return decoded_json.body;
 }
+
+module.exports.make_html_response = function(callback , message){
+  message_html(message, function(data){
+      var response = {
+        statusCode: 200,
+        headers: { 
+          "Content-Type": "text/html"  
+        },
+        body: data
+      };
+      callback(response);
+  });
+}
+
+var message_html = function(message, callback){
+  fs.readFile('resend.html', 'utf8', function (err,data) {
+    if (err) {
+      console.log(err);
+    }
+    var data_message = ejs.render(data, {
+        message      : message
+    });
+    callback(data_message);
+  });
+}
+
