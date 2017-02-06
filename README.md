@@ -40,10 +40,10 @@ Into the file 'config.json' you have to set the values:
 
 Statham provides an API Endpoint to send a message through a HTTP POST method, the body have to be as follows:
 
-```
+```json
 {
   "method": "POST | GET",
   "url": "https://your-destination-direction/resource",
-  "body": <JSON_OBJECT>
+  "body": JSON_OBJECT
 }
 ```
