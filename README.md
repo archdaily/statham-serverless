@@ -14,7 +14,8 @@ Statham acts as a sender of HTTP POST requests, with an algorithm that **tries**
 
 #### Clone the repo then cd into that folder
 
-- ```https://github.com/PNet/statham-serverless```
+* ```git clone https://github.com/PNet/statham-serverless```
+* ```cd statham-serverless```
 
 #### Download dependencies
 
