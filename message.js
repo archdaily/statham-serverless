@@ -6,6 +6,8 @@ var utilities         = require('utilities');
 var ses               = require('ses');
 var sqs               = require('sqs');
 
+var triesNum = 5;
+
 module.exports.send = function(message, callback){
   validate_tries_message(message, function(response){
     if(response.statusCode == 200)
@@ -29,7 +31,7 @@ var validate_tries_message = function(messageJSON, callback){
 
   messageJSON = add_attributes(messageJSON);
 
-  if(messageJSON.tries > 5)
+  if(messageJSON.tries > triesNum)
     error_message_to_email(messageJSON, function(response){
       callback(response);
     });
