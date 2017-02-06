@@ -4,10 +4,11 @@ var async             = require('async');
 var sleep             = require('sleep');
 var utilities         = require('utilities');
 var AWS               = require('aws-sdk');
+var config            = require('nconf').file('config.json');
 
 AWS.config.loadFromPath('./credentials.json');
 
-var trunkURL          = 'https://sqs.us-west-2.amazonaws.com/451967854914/statham.fifo';
+var trunkURL          = config.get('TrunkURL');
 var sqs  = new AWS.SQS();
 
 var messagesJSON = {

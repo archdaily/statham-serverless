@@ -1,13 +1,14 @@
 'use strict';
 
 var AWS                 = require('aws-sdk');
+var config              = require('nconf').file('config.json');
 
 AWS.config.loadFromPath('./credentials.json');
 
 var cloudwatchevents    = new AWS.CloudWatchEvents();
 var lambda              = new AWS.Lambda();
-var scheduleExpression  = 'cron(0/1 * * * ? *)';
-var lambdaArn           = "arn:aws:lambda:us-west-2:451967854914:function:msgService-dev-send";
+var scheduleExpression  = config.get('CycleExpression');
+var lambdaArn           = config.get('ReceiverArn');
 
 module.exports.enable_rule = function(){
   exist_rule(function(exist){

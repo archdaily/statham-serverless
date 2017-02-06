@@ -5,8 +5,9 @@ var url               = require('url');
 var utilities         = require('utilities');
 var ses               = require('ses');
 var sqs               = require('sqs');
+var config            = require('nconf').file('config.json');
 
-var triesNum = 5;
+var triesNum = parseInt(config.get('TriesNum'));
 
 module.exports.send = function(message, callback){
   validate_tries_message(message, function(response){
