@@ -34,7 +34,7 @@ Set your AWS credentials on the file 'credentials.json.sample' and rename it to 
 Into the file 'config.json' you have to set the values:
 * CycleExpression: The expresion that defines how much time will wait Statham to do another attempt.
 * TriesNum: Number of times that Statham tries to send a message before sending a repórt to the email into *EmailNotification* parameter.
-* OriginFilter: An array of origins that Statham accept.
+* OriginFilters: An array of origins that Statham accept.
 * EmailNotification: A e-mail direction to send the report when statham reached the max number of attempts (*TriesNum*).
 
 ### Sending a message

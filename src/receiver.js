@@ -11,28 +11,34 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
     if(sent){
       send_response(
         messageJSON.email,
-        "The message was delivered successfully."
+        "The message was delivered successfully.",
+        function(response){
+          callback(null, response);
+        }
       );
     }
     else{
       send_response(
         messageJSON.email,
-        "The message could not be delivered but is in the queue of attempts."
+        "The message could not be delivered but is in the queue of attempts.",
+        function(response){
+          callback(null, response);
+        }
       );
     }
 
   });
 }
 
-var send_response = function(email, message){
+var send_response = function(email, message, callback){
   if(email == 1){
     utilities.make_html_response(function(response){
-      callback(null,response);
+      callback(response);
     },
     message);
   }
   else{
-    callback(null, endpoint_response(message));
+    callback(endpoint_response(message));
   }
 }
 
