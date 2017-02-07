@@ -13,14 +13,31 @@ module.exports.send = (event, context, callback) => {
   else{
     var messageJSON = utilities.fetch_request_message(event);
     send_message(messageJSON, function(sent){
-      if(sent){
-        callback(null, endpoint_response("Message sent"));
+      if (messageJSON.email){
+        if(sent){
+          utilities.make_html_response(function(response){
+            callback(null,response);      
+          }, "The message was delivered successfully."
+          );
+        }
+        else{
+          cloudwatch.enable_rule();
+          utilities.make_html_response(function(response){
+            callback(null,response);
+          }, "The message could not be delivered but is in the queue of attempts."
+          );
+        } 
       }
       else{
-        cloudwatch.enable_rule();
-        callback(null, endpoint_response(
-          "The message couldn't be sent, added to the pending list"
-        ));
+        if(sent){
+          callback(null, endpoint_response("Message sent."));
+        }
+        else{
+          cloudwatch.enable_rule();
+          callback(null, endpoint_response(
+            "The message could not be delivered but is in the queue of attempts."
+          ));
+        }
       }
     });
   }
