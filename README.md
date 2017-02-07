@@ -21,11 +21,11 @@ When it reaches that number of attempts, Statham will notify to a given email th
 
 ### Download dependencies
 
-On statham-serverless folder open a terminal and install as follows: (npm will create a folder named node_modules to save all libraries)
+On statham-serverless folder open a terminal:
 
-- Async ```npm install async```
-- Ejs ```npm install ejs```
-- nconf ```npm install nconf```
+* ```npm install```
+
+After that, npm should have created a folder named node_modules with all the libraries listed in the `packages.json` file.
 
 ### Setting Statham
 
@@ -53,5 +53,3 @@ Statham provides an API Endpoint to send a message through a HTTP POST method, t
 The services used by Statham are: lambda functions, Message Queue Service (SQS database), Monitor Resourses and Application (CloudWach Alarm) and finally Simple Email Service (SES), the relationship and behavior of each of these is detailed below.
 
 ![Image not available](https://s3-us-west-2.amazonaws.com/statham-img/DIAGRAMA+STATHAM.png)
-
-
