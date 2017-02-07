@@ -8,11 +8,12 @@ AWS.config.loadFromPath('./credentials.json');
 var cloudwatchevents    = new AWS.CloudWatchEvents();
 var lambda              = new AWS.Lambda();
 var scheduleExpression  = config.get('CycleExpression');
+var StathamRuleName     = "StathamCycle";
 
 module.exports.enable_rule = function(){
   exist_rule(function(exist){
     var params = {
-      Name: 'Statham-cycle',
+      Name: StathamRuleName,
       ScheduleExpression: scheduleExpression,
       State: 'ENABLED'
     };
@@ -30,7 +31,7 @@ module.exports.enable_rule = function(){
 
 module.exports.disable_rule = function(){
   var params = {
-    Name: 'Statham-cycle',
+    Name: StathamRuleName,
     ScheduleExpression: scheduleExpression,
     State: 'DISABLED'
   };
@@ -42,7 +43,7 @@ module.exports.disable_rule = function(){
 var put_lambda_target = function(){
   get_lambda(function(LambdaArn){
     var params = {
-      Rule: 'Statham-cycle',
+      Rule: StathamRuleName,
       Targets: [
         {
           Arn: LambdaArn,
@@ -74,7 +75,7 @@ var add_permission_trigger_lambda = function(ruleArn){
 var exist_rule = function(callback){
   var params = {
     Limit: 1,
-    NamePrefix: 'Statham-cycle'
+    NamePrefix: StathamRuleName
   };
   cloudwatchevents.listRules(params, function(err, data) {
     if (err){
@@ -90,7 +91,7 @@ var exist_rule = function(callback){
 
 var get_lambda = function(callback){
   var params = {
-    FunctionName: "msgService-dev-send"
+    FunctionName: "StathamService-dev-worker"
   };
   lambda.getFunction(params, function(err, data) {
     if (err) console.log(err, err.stack);

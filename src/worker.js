@@ -1,5 +1,8 @@
 'use strict';
-
+var Message     = require('message');
+var sqs         = require('sqs');
+var async       = require('async');
+var cloudwatch  = require('cloudwatch');
 
 module.exports.workFromTrunk = (event, context, callback) => {
   sqs.get_list_trunk(function(listMsg){
@@ -9,7 +12,7 @@ module.exports.workFromTrunk = (event, context, callback) => {
 
 var process_list_concurrently = function(listMsg){
   async.every(listMsg.Messages, function(message, next){
-    Message.send(message, function(sent){
+    Message.send(message.Message, function(sent){
       next(null, sent);
     });
   }, function(sent, result) {

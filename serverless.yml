@@ -11,7 +11,7 @@ functions:
     handler: src/receiver.receiveAndSendMessage
     events:
       - http:
-          path: send
+          path: receive
           method: post
   worker:
     timeout: 6
@@ -20,5 +20,5 @@ functions:
     handler: handler.receiver
     events:
       - http:
-          path: receiver
+          path: testingDestination
           method: post
