@@ -1,8 +1,19 @@
 'use strict';
 var fs                = require('fs');
 var ejs               = require('ejs');
+var config            = require('nconf').file('config.json');
 
-var origin_mail = "https://mail.google.com";
+var Filters = config.get('OriginFilters');
+
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
 
 module.exports.make_json_response = function(statusCode,body){
   var response = {
@@ -14,7 +25,8 @@ module.exports.make_json_response = function(statusCode,body){
 
 module.exports.fetch_request_message = function(event){
   var messageJSON;
-  if(event.headers.Origin == origin_mail){
+  //console.log(Filters.contains(event.headers.Origin));
+  if(Filters.contains(event.headers.Origin)){
     messageJSON = get_message_from_email(event.body);
   }
   else{
