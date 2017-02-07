@@ -5,6 +5,9 @@ var url               = require('url');
 var utilities         = require('utilities');
 var ses               = require('ses');
 var sqs               = require('sqs');
+var config            = require('nconf').file('config.json');
+
+var triesNum = parseInt(config.get('TriesNum'));
 
 module.exports.send = function(message, callback){
   validate_tries_message(message, function(response){
@@ -29,7 +32,7 @@ var validate_tries_message = function(messageJSON, callback){
 
   messageJSON = add_attributes(messageJSON);
 
-  if(messageJSON.tries > 5)
+  if(messageJSON.tries > triesNum)
     error_message_to_email(messageJSON, function(response){
       callback(response);
     });

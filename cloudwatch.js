@@ -1,18 +1,19 @@
 'use strict';
 
 var AWS                 = require('aws-sdk');
-var Key_Id              = 'A***REMOVED***';
-var secretAccessKey     = '***REMOVED***';
-AWS.config.update({accessKeyId: Key_Id, secretAccessKey: secretAccessKey});
+var config              = require('nconf').file('config.json');
+
+AWS.config.loadFromPath('./credentials.json');
+
 var cloudwatchevents    = new AWS.CloudWatchEvents();
 var lambda              = new AWS.Lambda();
-var scheduleExpression  = 'cron(0/1 * * * ? *)';
-var lambdaArn           = "arn:aws:lambda:us-west-2:451967854914:function:msgService-dev-send";
+var scheduleExpression  = config.get('CycleExpression');
+var StathamRuleName     = "StathamCycle";
 
 module.exports.enable_rule = function(){
   exist_rule(function(exist){
     var params = {
-      Name: 'Statham-cycle',
+      Name: StathamRuleName,
       ScheduleExpression: scheduleExpression,
       State: 'ENABLED'
     };
@@ -30,7 +31,7 @@ module.exports.enable_rule = function(){
 
 module.exports.disable_rule = function(){
   var params = {
-    Name: 'Statham-cycle',
+    Name: StathamRuleName,
     ScheduleExpression: scheduleExpression,
     State: 'DISABLED'
   };
@@ -40,37 +41,41 @@ module.exports.disable_rule = function(){
 }
 
 var put_lambda_target = function(){
-  var params = {
-    Rule: 'Statham-cycle',
-    Targets: [
-      {
-        Arn: lambdaArn,
-        Id: "Lambda-Worker"
-      }
-    ]
-  };
-  cloudwatchevents.putTargets(params, function(err, data) {
-    if (err) console.log(err, err.stack);
+  get_lambda(function(LambdaArn){
+    var params = {
+      Rule: StathamRuleName,
+      Targets: [
+        {
+          Arn: LambdaArn,
+          Id: "Lambda-Worker"
+        }
+      ]
+    };
+    cloudwatchevents.putTargets(params, function(err, data) {
+      if (err) console.log(err, err.stack);
+    });
   });
 }
 
 var add_permission_trigger_lambda = function(ruleArn){
-  var params = {
-    Action: "lambda:InvokeFunction",
-    FunctionName: lambdaArn,
-    Principal: "events.amazonaws.com",
-    SourceArn: ruleArn,
-    StatementId: "ID-1"
-  };
-  lambda.addPermission(params, function(err, data) {
-    if (err) console.log(err, err.stack);
+  get_lambda(function(LambdaArn){
+    var params = {
+      Action: "lambda:InvokeFunction",
+      FunctionName: LambdaArn,
+      Principal: "events.amazonaws.com",
+      SourceArn: ruleArn,
+      StatementId: "ID-1"
+    };
+    lambda.addPermission(params, function(err, data) {
+      if (err) console.log(err, err.stack);
+    });
   });
 }
 
 var exist_rule = function(callback){
   var params = {
     Limit: 1,
-    NamePrefix: 'Statham-cycle'
+    NamePrefix: StathamRuleName
   };
   cloudwatchevents.listRules(params, function(err, data) {
     if (err){
@@ -81,5 +86,16 @@ var exist_rule = function(callback){
       if(data.Rules.length == 1) callback(true);
       else callback(false);
     }
+  });
+}
+
+var get_lambda = function(callback){
+  var params = {
+    FunctionName: "StathamService-dev-worker"
+  };
+  lambda.getFunction(params, function(err, data) {
+    if (err) console.log(err, err.stack);
+    else
+      callback(data.Configuration.FunctionArn);
   });
 }

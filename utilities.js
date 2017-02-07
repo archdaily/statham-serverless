@@ -1,4 +1,19 @@
 'use strict';
+var fs                = require('fs');
+var ejs               = require('ejs');
+var config            = require('nconf').file('config.json');
+
+var Filters = config.get('OriginFilters');
+
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
 
 module.exports.make_json_response = function(statusCode,body){
   var response = {
@@ -10,15 +25,29 @@ module.exports.make_json_response = function(statusCode,body){
 
 module.exports.fetch_request_message = function(event){
   var messageJSON;
-  if(event.source == 'aws.events'){
-    messageJSON = JSON.parse(event.Records[0].Sns.Message);
+  //console.log(Filters.contains(event.headers.Origin));
+  if(Filters.contains(event.headers.Origin)){
+    messageJSON = get_message_from_email(event.body);
   }
   else{
     messageJSON = JSON.parse(event.body);
-    messageJSON.source = event.headers.Origin;
-    messageJSON.id = event.requestContext.requestId;
   }
+  messageJSON.source = event.headers.Origin;
+  messageJSON.id = event.requestContext.requestId;
   return messageJSON;
+}
+
+module.exports.make_html_response = function(callback , message){
+  message_html(message, function(data){
+      var response = {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "text/html"
+        },
+        body: data
+      };
+      callback(response);
+  });
 }
 
 module.exports.get_random_char = function(){
@@ -50,4 +79,52 @@ var upper_chars = function(){
 
 var number_chars = function(){
   return "0123456789";
+}
+
+var url_decode = function(code){
+  var decoded_body = decodeURIComponent(code);
+  return decoded_body;
+}
+
+var url_to_json = function(code){
+  var hash;
+  var myJson = {};
+  var hashes = code.slice(code.indexOf('?') + 1).split('&');
+  for (var i = 0; i < hashes.length; i++) {
+      hash = hashes[i].split('=');
+      myJson[hash[0]] = hash[1];
+  }
+  return myJson;
+}
+
+var get_url = function(decoded_json){
+  return decoded_json.url;
+}
+
+var get_body = function(decoded_json){
+  return decoded_json.body;
+}
+
+var message_html = function(message, callback){
+  fs.readFile('resend.html', 'utf8', function (err,data) {
+    if (err) {
+      console.log(err);
+    }
+    var data_message = ejs.render(data, {
+        message      : message
+    });
+    callback(data_message);
+  });
+}
+
+var get_message_from_email = function(messageEncoded){
+  var decoded_message = url_decode(messageEncoded);
+  var decoded_json = url_to_json(decoded_message);
+  var messageJSON = {
+    "email"    : 1,
+    "method"   : event.httpMethod,
+    "url"      : get_url(decoded_json),
+    "body"     : get_body(decoded_json)
+  }
+  return messageJSON;
 }

@@ -1,0 +1,32 @@
+{
+  "name": "statham-serverless",
+  "version": "2.0.0",
+  "description": "Trustly transporter of HTTP POST request that have sending attempts if the destination couldn't be reached.",
+  "main": "send.js",
+  "dependencies": {
+    "async": "^2.1.4",
+    "ejs": "^2.5.5",
+    "nconf": "^0.8.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PNet/statham-serverless.git"
+  },
+  "keywords": [
+    "HTTP",
+    "POST",
+    "REQUEST",
+    "ATTEMPTS",
+    "NOTIFICATION"
+  ],
+  "author": "PNET",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PNet/statham-serverless/issues"
+  },
+  "homepage": "https://github.com/PNet/statham-serverless#readme"
+}

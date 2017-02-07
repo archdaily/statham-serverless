@@ -1,2 +1,3 @@
-.serverless/**
-.swp
+.serverless/
+credentials.json
+node_modules/
