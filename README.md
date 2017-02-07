@@ -50,7 +50,7 @@ Statham provides an API Endpoint to send a message through a HTTP POST method, t
 ```
 ## Statham AWS Structure
 
-The services used by Statham are: lambda functions, SQS database, CloudWach alarm and finally Simple Email Service (SES), the relationship and behavior of each of these is detailed below.
+The services used by Statham are: lambda functions, Message Queue Service (SQS database), Monitor Resourses and Application (CloudWach Alarm) and finally Simple Email Service (SES), the relationship and behavior of each of these is detailed below.
 
 ![Image not available](https://s3-us-west-2.amazonaws.com/statham-img/DIAGRAMA+STATHAM.png)
 
