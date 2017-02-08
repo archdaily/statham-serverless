@@ -1,9 +1,14 @@
 'use strict';
 var fs                = require('fs');
 var ejs               = require('ejs');
-var config            = require('nconf').file('config.json');
+var jwt               = require('jsonwebtoken');
+var moment            = require('moment');
 
-var Filters = config.get('OriginFilters');
+var config            = require('nconf').file('config.json');
+var Filters           = config.get('OriginFilters');
+
+var credentials       = require('nconf').file('credentials.json');
+var Token             = credentials.get('secretToken');
 
 Array.prototype.contains = function(obj) {
     var i = this.length;
@@ -15,6 +20,15 @@ Array.prototype.contains = function(obj) {
     return false;
 }
 
+module.exports.createToken = function(origin) {
+  var payload = {
+    ip: origin,
+    iat: moment().unix(),
+    exp: moment().add(14, "days").unix(),
+  };
+  return jwt.sign(payload, Token);
+};
+
 module.exports.make_json_response = function(statusCode,body){
   var response = {
     statusCode: statusCode,
@@ -25,7 +39,6 @@ module.exports.make_json_response = function(statusCode,body){
 
 module.exports.fetch_request_message = function(event){
   var messageJSON;
-  //console.log(Filters.contains(event.headers.Origin));
   if(Filters.contains(event.headers.Origin)){
     messageJSON = get_message_from_email(event.body);
   }
