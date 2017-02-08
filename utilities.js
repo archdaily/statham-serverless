@@ -106,7 +106,7 @@ var get_body = function(decoded_json){
 }
 
 var message_html = function(message, callback){
-  fs.readFile('resend.html', 'utf8', function (err,data) {
+  fs.readFile('views/resend.html', 'utf8', function (err,data) {
     if (err) {
       console.log(err);
     }
