@@ -36,28 +36,3 @@ Into the file 'config.json' you have to set the values:
 * TriesNum: Number of times that Statham tries to send a message before sending a repórt to the email into *EmailNotification* parameter.
 * OriginFilters: An array of origins that Statham accept when the message is sended from a email.
 * EmailNotification: A e-mail direction to send the report when statham reached the max number of attempts (*TriesNum*).
-
-### Sending a message
-
-Statham provides an API Endpoint to send a message through a HTTP POST method, the body have to be as follows:
-
-```json
-{
-  "method": "POST | GET",
-  "url": "https://your-destination-direction/resource",
-  "body": JSON_OBJECT
-}
-```
-## Statham AWS Structure
-
-The services used by Statham are: lambda functions, Message Queue Service (SQS database), Monitor Resourses and Application (CloudWach Alarm) and finally Simple Email Service (SES), the relationship and behavior of each of these is detailed below.
-
-![Image not available](https://s3-us-west-2.amazonaws.com/statham-img/DIAGRAMA+STATHAM.png)
-
-## Configurate Email in SES
-
-In order to use the SES service of amazon it is necessary to authenticate an e-mail address, this means to integrate the SNS and DKIM for the correct functioning of the messaging.
-
-This step can not be performed using statham deploy, so it is required to perform manually.
-
-[Configurate Email SES](https://us-west-2.console.aws.amazon.com/ses/home?region=us-west-2#verified-senders-email:)
