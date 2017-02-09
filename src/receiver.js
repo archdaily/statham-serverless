@@ -47,8 +47,8 @@ var endpoint_response = function(message){
   return response;
 }
 
-var deliver_message = function(message, callback){
-  Message.send(message, function(sent){
+var deliver_message = function(messageJSON, callback){
+  Message.send(messageJSON, function(sent){
     if(sent){
       create_response(
         messageJSON.email,
