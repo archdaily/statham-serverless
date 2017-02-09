@@ -53,3 +53,11 @@ Statham provides an API Endpoint to send a message through a HTTP POST method, t
 The services used by Statham are: lambda functions, Message Queue Service (SQS database), Monitor Resourses and Application (CloudWach Alarm) and finally Simple Email Service (SES), the relationship and behavior of each of these is detailed below.
 
 ![Image not available](https://s3-us-west-2.amazonaws.com/statham-img/DIAGRAMA+STATHAM.png)
+
+## Configurate Email in SES
+
+In order to use the SES service of amazon it is necessary to authenticate an e-mail address, this means to integrate the SNS and DKIM for the correct functioning of the messaging.
+
+This step can not be performed using statham deploy, so it is required to perform manually.
+
+[Configurate Email SES](https://us-west-2.console.aws.amazon.com/ses/home?region=us-west-2#verified-senders-email:)
