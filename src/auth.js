@@ -1,19 +1,19 @@
 'use strict'
 
 var utilities         = require('utilities');
-var config            = require('nconf').file('config.json');
+var config            = require('nconf').file('credentials.json');
 
-var AuthIps = config.get("AuthIps");
+var pass = config.get("passwordJWK");
 
 module.exports.getToken = (event, context, callback) => {
-  if(AuthIps.contains(event.requestContext.identity.sourceIp)){
+  if(event.headers.Password == pass){
     callback(null, utilities.make_json_response(200,{
       "token" : utilities.createToken(event.requestContext.identity.sourceIp)
     }));
   }
   else{
     callback(null, utilities.make_json_response(400,{
-      "error" : "Unidentified access"
+      "error" : "Invalid or missing Password"
     }));
   }
 };
