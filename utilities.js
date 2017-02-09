@@ -4,9 +4,6 @@ var ejs               = require('ejs');
 var jwt               = require('jsonwebtoken');
 var moment            = require('moment');
 
-var config            = require('nconf').file('config.json');
-var Filters           = config.get('OriginFilters');
-
 var credentials       = require('nconf').file('credentials.json');
 var secretToken       = credentials.get('secretToken');
 
@@ -29,18 +26,13 @@ module.exports.createToken = function(origin) {
   return jwt.sign(payload, secretToken);
 };
 
-module.exports.verifyToken = function(event){
+module.exports.verifyTokenHeader = function(event){
   if(!event.headers.Authorization) {
     return false;
   }
   var tokenJWT = event.headers.Authorization;
 
-  try {
-    var decoded = jwt.verify(tokenJWT, secretToken);
-    return true;
-  } catch(err) {
-    return false;
-  }
+  return verifyToken(tokenJWT);
 }
 
 module.exports.make_json_response = function(statusCode,body){
@@ -51,10 +43,11 @@ module.exports.make_json_response = function(statusCode,body){
   return response;
 }
 
-module.exports.fetch_request_message = function(event){
+module.exports.fetch_request_message = function(event, email){
   var messageJSON;
-  if(Filters.contains(event.headers.Origin)){
+  if(email){
     messageJSON = get_message_from_email(event.body);
+    if(!verifyToken(messageJSON.token)) return null;
   }
   else{
     messageJSON = JSON.parse(event.body);
@@ -159,4 +152,13 @@ var get_message_from_email = function(messageEncoded){
     "body"     : get_body(decoded_json)
   }
   return messageJSON;
+}
+
+var verifyToken = function(token){
+  try {
+    var decoded = jwt.verify(token, secretToken);
+    return true;
+  } catch(err) {
+    return false;
+  }
 }
