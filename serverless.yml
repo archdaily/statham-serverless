@@ -1,4 +1,4 @@
-service: msgService
+service: StathamService
 
 provider:
   name: aws
@@ -6,16 +6,19 @@ provider:
   region: us-west-2
 
 functions:
-  send:
+  receiver:
     timeout: 6
-    handler: src/send.send
+    handler: src/receiver.receiveAndSendMessage
     events:
       - http:
-          path: send
+          path: receive
           method: post
+  worker:
+    timeout: 6
+    handler: src/worker.workFromTrunk
   receiverMessage:
     handler: handler.receiver
     events:
       - http:
-          path: receiver
+          path: testingDestination
           method: post

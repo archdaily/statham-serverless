@@ -1,8 +1,19 @@
 'use strict';
 var fs                = require('fs');
 var ejs               = require('ejs');
+var config            = require('nconf').file('config.json');
 
-var origin_mail = "https://mail.google.com";
+var Filters = config.get('OriginFilters');
+
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
 
 module.exports.make_json_response = function(statusCode,body){
   var response = {
@@ -14,15 +25,9 @@ module.exports.make_json_response = function(statusCode,body){
 
 module.exports.fetch_request_message = function(event){
   var messageJSON;
-  if(event.headers.Origin == origin_mail){
-    var decoded_message = url_decode(event.body);
-    var decoded_json = url_to_json(decoded_message);
-    messageJSON = {
-      "email"    : 1,
-      "method"   : event.httpMethod,
-      "url"      : get_url(decoded_json),
-      "body"     : get_body(decoded_json)
-    }
+  //console.log(Filters.contains(event.headers.Origin));
+  if(Filters.contains(event.headers.Origin)){
+    messageJSON = get_message_from_email(event.body);
   }
   else{
     messageJSON = JSON.parse(event.body);
@@ -30,6 +35,19 @@ module.exports.fetch_request_message = function(event){
   messageJSON.source = event.headers.Origin;
   messageJSON.id = event.requestContext.requestId;
   return messageJSON;
+}
+
+module.exports.make_html_response = function(callback , message){
+  message_html(message, function(data){
+      var response = {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "text/html"
+        },
+        body: data
+      };
+      callback(response);
+  });
 }
 
 module.exports.get_random_char = function(){
@@ -87,19 +105,6 @@ var get_body = function(decoded_json){
   return decoded_json.body;
 }
 
-module.exports.make_html_response = function(callback , message){
-  message_html(message, function(data){
-      var response = {
-        statusCode: 200,
-        headers: { 
-          "Content-Type": "text/html"  
-        },
-        body: data
-      };
-      callback(response);
-  });
-}
-
 var message_html = function(message, callback){
   fs.readFile('resend.html', 'utf8', function (err,data) {
     if (err) {
@@ -112,3 +117,14 @@ var message_html = function(message, callback){
   });
 }
 
+var get_message_from_email = function(messageEncoded){
+  var decoded_message = url_decode(messageEncoded);
+  var decoded_json = url_to_json(decoded_message);
+  var messageJSON = {
+    "email"    : 1,
+    "method"   : event.httpMethod,
+    "url"      : get_url(decoded_json),
+    "body"     : get_body(decoded_json)
+  }
+  return messageJSON;
+}
