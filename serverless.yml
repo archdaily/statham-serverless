@@ -16,6 +16,13 @@ functions:
   worker:
     timeout: 6
     handler: src/worker.workFromTrunk
+  auth:
+    timeout: 3
+    handler: src/auth.getToken
+    events:
+      - http:
+          path: getToken
+          method: get
   receiverMessage:
     handler: handler.receiver
     events:

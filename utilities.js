@@ -1,9 +1,11 @@
 'use strict';
 var fs                = require('fs');
 var ejs               = require('ejs');
-var config            = require('nconf').file('config.json');
+var jwt               = require('jsonwebtoken');
+var moment            = require('moment');
 
-var Filters = config.get('OriginFilters');
+var credentials       = require('nconf').file('credentials.json');
+var secretToken       = credentials.get('secretToken');
 
 Array.prototype.contains = function(obj) {
     var i = this.length;
@@ -15,6 +17,24 @@ Array.prototype.contains = function(obj) {
     return false;
 }
 
+module.exports.createToken = function(origin) {
+  var payload = {
+    ip: origin,
+    iat: moment().unix(),
+    exp: moment().add(14, "days").unix(),
+  };
+  return jwt.sign(payload, secretToken);
+};
+
+module.exports.verifyTokenHeader = function(event){
+  if(!event.headers.Authorization) {
+    return false;
+  }
+  var tokenJWT = event.headers.Authorization;
+
+  return verifyToken(tokenJWT);
+}
+
 module.exports.make_json_response = function(statusCode,body){
   var response = {
     statusCode: statusCode,
@@ -23,16 +43,17 @@ module.exports.make_json_response = function(statusCode,body){
   return response;
 }
 
-module.exports.fetch_request_message = function(event){
+module.exports.fetch_request_message = function(event, email){
   var messageJSON;
-  //console.log(Filters.contains(event.headers.Origin));
-  if(Filters.contains(event.headers.Origin)){
-    messageJSON = get_message_from_email(event.body);
+  if(email){
+    messageJSON = get_message_from_email(event);
+    if(!verifyToken(messageJSON.token)) return null;
   }
   else{
     messageJSON = JSON.parse(event.body);
   }
   messageJSON.source = event.headers.Origin;
+  messageJSON.resource = event.headers["X-Forwarded-Proto"] + "://" + event.headers["Host"] + "/" + event.requestContext["stage"] + event.path;
   messageJSON.id = event.requestContext.requestId;
   return messageJSON;
 }
@@ -105,8 +126,12 @@ var get_body = function(decoded_json){
   return decoded_json.body;
 }
 
+var get_token = function(decoded_json){
+  return decoded_json.token;
+}
+
 var message_html = function(message, callback){
-  fs.readFile('resend.html', 'utf8', function (err,data) {
+  fs.readFile('views/resend.html', 'utf8', function (err,data) {
     if (err) {
       console.log(err);
     }
@@ -117,14 +142,24 @@ var message_html = function(message, callback){
   });
 }
 
-var get_message_from_email = function(messageEncoded){
-  var decoded_message = url_decode(messageEncoded);
+var get_message_from_email = function(event){
+  var decoded_message = url_decode(event.body);
   var decoded_json = url_to_json(decoded_message);
   var messageJSON = {
     "email"    : 1,
     "method"   : event.httpMethod,
     "url"      : get_url(decoded_json),
+    "token"    : get_token(decoded_json),
     "body"     : get_body(decoded_json)
   }
   return messageJSON;
+}
+
+var verifyToken = function(token){
+  try {
+    var decoded = jwt.verify(token, secretToken);
+    return true;
+  } catch(err) {
+    return false;
+  }
 }

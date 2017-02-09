@@ -29,7 +29,7 @@ After that, npm should have created a folder named node_modules with all the lib
 
 ### Setting Statham
 
-Set your AWS credentials on the file 'credentials.json.sample' and rename it to 'credentials.json'.
+Set your AWS credentials and secret token on the file 'credentials.json.sample' and rename it to 'credentials.json'.
 
 Into the file 'config.json' you have to set the values:
 * CycleExpression: The expresion that defines how much time will wait Statham to do another attempt.
@@ -37,19 +37,3 @@ Into the file 'config.json' you have to set the values:
 * OriginFilters: An array of origins that Statham accept when the message is sended from a email.
 * EmailNotification: A e-mail direction to send the report when statham reached the max number of attempts (*TriesNum*).
 
-### Sending a message
-
-Statham provides an API Endpoint to send a message through a HTTP POST method, the body have to be as follows:
-
-```json
-{
-  "method": "POST | GET",
-  "url": "https://your-destination-direction/resource",
-  "body": JSON_OBJECT
-}
-```
-## Statham AWS Structure
-
-The services used by Statham are: lambda functions, Message Queue Service (SQS database), Monitor Resourses and Application (CloudWach Alarm) and finally Simple Email Service (SES), the relationship and behavior of each of these is detailed below.
-
-![Image not available](https://s3-us-west-2.amazonaws.com/statham-img/DIAGRAMA+STATHAM.png)

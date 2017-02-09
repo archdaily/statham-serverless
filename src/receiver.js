@@ -5,33 +5,28 @@ var utilities   = require('utilities');
 var cloudwatch  = require('cloudwatch');
 
 module.exports.receiveAndSendMessage = (event, context, callback) => {
-  var messageJSON = utilities.fetch_request_message(event);
-  Message.send(messageJSON, function(sent){
-
-    if(sent){
-      send_response(
-        messageJSON.email,
-        "The message was delivered successfully.",
-        function(response){
-          callback(null, response);
-        }
-      );
+  if(utilities.verifyTokenHeader(event)){
+    var messageJSON = utilities.fetch_request_message(event, false);
+    deliver_message(messageJSON, function(response){
+      callback(null, response);
+    });
+  }
+  else{
+    var messageJSON = utilities.fetch_request_message(event, true);
+    if(messageJSON){
+      deliver_message(messageJSON, function(response){
+        callback(null, response);
+      });
     }
     else{
-      cloudwatch.enable_rule();
-      send_response(
-        messageJSON.email,
-        "The message could not be delivered but is in the queue of attempts.",
-        function(response){
-          callback(null, response);
-        }
-      );
+      callback(null, endpoint_response(
+        "Invalid or missing token"
+      ));
     }
-
-  });
+  }
 }
 
-var send_response = function(email, message, callback){
+var create_response = function(email, message, callback){
   if(email == 1){
     utilities.make_html_response(function(response){
       callback(response);
@@ -49,4 +44,28 @@ var endpoint_response = function(message){
     "Status" : message
   });
   return response;
+}
+
+var deliver_message = function(messageJSON, callback){
+  Message.send(messageJSON, function(sent){
+    if(sent){
+      create_response(
+        messageJSON.email,
+        "The message was delivered successfully.",
+        function(response){
+          callback(response);
+        }
+      );
+    }
+    else{
+      cloudwatch.enable_rule();
+      create_response(
+        messageJSON.email,
+        "The message could not be delivered but is in the queue of attempts.",
+        function(response){
+          callback(response);
+        }
+      );
+    }
+  });
 }
