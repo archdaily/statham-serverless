@@ -4,6 +4,7 @@ var fs                = require('fs');
 var ejs               = require('ejs');
 var AWS               = require('aws-sdk');
 var config            = require('nconf').file('config.json');
+var utilities         = require('utilities');
 
 AWS.config.loadFromPath('./credentials.json');
 
@@ -45,6 +46,7 @@ var render_body_html = function(message, callback){
         source      : message.source,
         url         : message.url,
         error       : message.error,
+        token       : utilities.createToken("email"),
         body        : JSON.stringify(message.body)
     });
     callback(data_message);

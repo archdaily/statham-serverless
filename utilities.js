@@ -132,6 +132,10 @@ var get_body = function(decoded_json){
   return decoded_json.body;
 }
 
+var get_token = function(decoded_json){
+  return decoded_json.token;
+}
+
 var message_html = function(message, callback){
   fs.readFile('views/resend.html', 'utf8', function (err,data) {
     if (err) {
@@ -151,6 +155,7 @@ var get_message_from_email = function(messageEncoded){
     "email"    : 1,
     "method"   : event.httpMethod,
     "url"      : get_url(decoded_json),
+    "token"    : get_token(decoded_json),
     "body"     : get_body(decoded_json)
   }
   return messageJSON;
