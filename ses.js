@@ -10,7 +10,7 @@ AWS.config.loadFromPath('./credentials.json');
 
 var ses               = new AWS.SES();
 
-var to = [config.get('EmailNotification')];
+var to   = [config.get('EmailNotification')];
 var from = config.get('EmailNotification');
 
 module.exports.mail_message_generator = function(message){
@@ -41,7 +41,7 @@ var render_body_html = function(message, callback){
       console.log(err);
     }
     var data_message = ejs.render(data, {
-        lambda      : "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/receive",
+        lambda      : message.resource,
         method      : message.method,
         destination : message.destination,
         source      : message.source,
