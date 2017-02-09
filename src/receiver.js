@@ -10,7 +10,6 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
     deliver_message(messageJSON, function(response){
       callback(null, response);
     });
-    
   }
   else{
     var messageJSON = utilities.fetch_request_message(event, true);
