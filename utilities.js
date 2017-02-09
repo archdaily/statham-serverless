@@ -8,7 +8,7 @@ var config            = require('nconf').file('config.json');
 var Filters           = config.get('OriginFilters');
 
 var credentials       = require('nconf').file('credentials.json');
-var Token             = credentials.get('secretToken');
+var secretToken       = credentials.get('secretToken');
 
 Array.prototype.contains = function(obj) {
     var i = this.length;
@@ -26,8 +26,22 @@ module.exports.createToken = function(origin) {
     iat: moment().unix(),
     exp: moment().add(14, "days").unix(),
   };
-  return jwt.sign(payload, Token);
+  return jwt.sign(payload, secretToken);
 };
+
+module.exports.verifyToken = function(event){
+  if(!event.headers.Authorization) {
+    return false;
+  }
+  var tokenJWT = event.headers.Authorization;
+
+  try {
+    var decoded = jwt.verify(tokenJWT, secretToken);
+    return true;
+  } catch(err) {
+    return false;
+  }
+}
 
 module.exports.make_json_response = function(statusCode,body){
   var response = {

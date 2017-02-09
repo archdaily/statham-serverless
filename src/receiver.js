@@ -5,29 +5,37 @@ var utilities   = require('utilities');
 var cloudwatch  = require('cloudwatch');
 
 module.exports.receiveAndSendMessage = (event, context, callback) => {
-  var messageJSON = utilities.fetch_request_message(event);
-  Message.send(messageJSON, function(sent){
-    if(sent){
-      send_response(
-        messageJSON.email,
-        "The message was delivered successfully.",
-        function(response){
-          callback(null, response);
-        },
-        event
-      );
-    }
-    else{
-      send_response(
-        messageJSON.email,
-        "The message could not be delivered but is in the queue of attempts.",
-        function(response){
-          callback(null, response);
-        },
-        event
-      );
-    }
-  });
+  if(utilities.verifyToken(event)){
+    var messageJSON = utilities.fetch_request_message(event);
+    Message.send(messageJSON, function(sent){
+      if(sent){
+        send_response(
+          messageJSON.email,
+          "The message was delivered successfully.",
+          function(response){
+            callback(null, response);
+          },
+          event
+        );
+      }
+      else{
+        send_response(
+          messageJSON.email,
+          "The message could not be delivered but is in the queue of attempts.",
+          function(response){
+            callback(null, response);
+          },
+          event
+        );
+      }
+    });
+  }
+  else{
+    callback(null, endpoint_response(
+      "Invalid or missing token",
+      event
+    ));
+  }
 }
 
 var send_response = function(email, message, callback, event){
