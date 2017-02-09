@@ -53,6 +53,7 @@ module.exports.fetch_request_message = function(event, email){
     messageJSON = JSON.parse(event.body);
   }
   messageJSON.source = event.headers.Origin;
+  messageJSON.resource = event.headers["X-Forwarded-Proto"] + "://" + event.headers["Host"] + "/" + event.requestContext["stage"] + event.path;
   messageJSON.id = event.requestContext.requestId;
   return messageJSON;
 }
