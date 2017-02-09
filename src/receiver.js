@@ -19,6 +19,7 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
         );
       }
       else{
+        cloudwatch.enable_rule();
         send_response(
           messageJSON.email,
           "The message could not be delivered but is in the queue of attempts.",
