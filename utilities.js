@@ -46,7 +46,7 @@ module.exports.make_json_response = function(statusCode,body){
 module.exports.fetch_request_message = function(event, email){
   var messageJSON;
   if(email){
-    messageJSON = get_message_from_email(event.body);
+    messageJSON = get_message_from_email(event);
     if(!verifyToken(messageJSON.token)) return null;
   }
   else{
@@ -141,8 +141,8 @@ var message_html = function(message, callback){
   });
 }
 
-var get_message_from_email = function(messageEncoded){
-  var decoded_message = url_decode(messageEncoded);
+var get_message_from_email = function(event){
+  var decoded_message = url_decode(event.body);
   var decoded_json = url_to_json(decoded_message);
   var messageJSON = {
     "email"    : 1,
