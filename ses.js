@@ -41,6 +41,7 @@ var render_body_html = function(message, callback){
       console.log(err);
     }
     var data_message = ejs.render(data, {
+        lambda      : "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/receive",
         method      : message.method,
         destination : message.destination,
         source      : message.source,
