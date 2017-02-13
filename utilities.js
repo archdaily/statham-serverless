@@ -7,16 +7,6 @@ var moment            = require('moment');
 var credentials       = require('nconf').file('credentials.json');
 var secretToken       = credentials.get('secretToken');
 
-Array.prototype.contains = function(obj) {
-    var i = this.length;
-    while (i--) {
-        if (this[i] === obj) {
-            return true;
-        }
-    }
-    return false;
-}
-
 module.exports.createToken = function(origin) {
   var payload = {
     ip: origin,
