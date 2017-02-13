@@ -12,6 +12,20 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
     });
   }
   else{
+    callback(null, endpoint_response(
+      "Invalid Authorization Token"
+    ));
+  }
+}
+
+module.exports.emailResend = (event, context, callback) => {
+  if(!event.queryStringParameters){
+    utilities.make_html_response(function(response){
+      callback(null, response);
+    },
+    "No transport service required");
+  }
+  else{
     var messageJSON = utilities.fetch_request_message(event, true);
     if(messageJSON){
       deliver_message(messageJSON, function(response){
@@ -19,9 +33,10 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
       });
     }
     else{
-      callback(null, endpoint_response(
-        "Invalid or missing token"
-      ));
+      utilities.make_html_response(function(response){
+        callback(null, response);
+      },
+      "Invalid Authorization Token");
     }
   }
 }
@@ -40,7 +55,6 @@ var create_response = function(email, message, callback){
 
 var endpoint_response = function(message){
   var response = utilities.make_json_response(200,{
-    "Response" : "Statham received your message!",
     "Status" : message
   });
   return response;

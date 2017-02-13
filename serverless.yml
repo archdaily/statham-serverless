@@ -13,6 +13,13 @@ functions:
       - http:
           path: receive
           method: post
+  receiverEmail:
+    timeout: 6
+    handler: src/receiver.emailResend
+    events:
+      - http:
+          path: receive
+          method: get
   worker:
     timeout: 6
     handler: src/worker.workFromTrunk
