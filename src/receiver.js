@@ -12,6 +12,18 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
     });
   }
   else{
+    callback(null, endpoint_response(
+      "Invalid Authorization Token"));
+    }
+  }
+}
+
+module.exports.emailResend = (event, context, callback) => {
+  if(!event.queryStringParameters.token){
+      callback(null, endpoint_response(
+      "Missing Authorization Token"));
+  }
+  else{
     var messageJSON = utilities.fetch_request_message(event, true);
     if(messageJSON){
       deliver_message(messageJSON, function(response){
@@ -20,7 +32,7 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
     }
     else{
       callback(null, endpoint_response(
-        "Invalid or missing token"
+        "Invalid Authorization Token"
       ));
     }
   }
