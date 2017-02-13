@@ -20,8 +20,10 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
 
 module.exports.emailResend = (event, context, callback) => {
   if(!event.queryStringParameters){
-      callback(null, endpoint_response(
-      "Missing Authorization Token"));
+    utilities.make_html_response(function(response){
+      callback(response);
+    },
+    "No transport service required");
   }
   else{
     var messageJSON = utilities.fetch_request_message(event, true);
@@ -31,9 +33,10 @@ module.exports.emailResend = (event, context, callback) => {
       });
     }
     else{
-      callback(null, endpoint_response(
-        "Invalid Authorization Token"
-      ));
+      utilities.make_html_response(function(response){
+        callback(response);
+      },
+      "Invalid Authorization Token");
     }
   }
 }
