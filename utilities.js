@@ -25,19 +25,27 @@ module.exports.verifyTokenHeader = function(event){
   return verifyToken(tokenJWT);
 }
 
-module.exports.make_json_response = function(statusCode,body){
+module.exports.verifyTokenStringParameter = function(event){
+  if(!event.queryStringParameters) return false;
+  else if(!event.queryStringParameters.token) return false;
+
+  var tokenJWT = event.queryStringParameters.token;
+
+  return verifyToken(tokenJWT);
+}
+
+module.exports.make_json_response = function(callback, statusCode, body){
   var response = {
     statusCode: statusCode,
     body: JSON.stringify(body)
   };
-  return response;
+  callback(response);
 }
 
 module.exports.fetch_request_message = function(event, email){
   var messageJSON;
   if(email){
     messageJSON = get_message_from_email(event);
-    if(!verifyToken(messageJSON.token)) return null;
   }
   else{
     messageJSON = JSON.parse(event.body);

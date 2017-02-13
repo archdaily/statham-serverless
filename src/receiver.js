@@ -10,29 +10,21 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
     deliver_message(messageJSON, callback);
   }
   else{
-    callback(null, endpoint_response(
-      "Invalid Authorization Token"
-    ));
+    create_response(0, "Invalid or missing auth token", function(response){
+      callback(null, response);
+    });
   }
 }
 
 module.exports.emailResend = (event, context, callback) => {
-  if(!event.queryStringParameters){
-    utilities.make_html_response(
-      "No transport service required",
-      function(response){
-        callback(null, response);
-      }
-    );
+  if(utilities.verifyTokenStringParameter(event)){
+    var messageJSON = utilities.fetch_request_message(event, true);
+    deliver_message(messageJSON, callback);
   }
   else{
-    var messageJSON = utilities.fetch_request_message(event, true);
-    if(messageJSON){
-      deliver_message(messageJSON, callback);
-    }
-    else{
-      utilities.make_html_response("Invalid Authorization Token", callback);
-    }
+    create_response(1, "No transport service required", function(response){
+      callback(null, response);
+    });
   }
 }
 
@@ -41,13 +33,7 @@ var create_response = function(email, message, callback){
     utilities.make_html_response(message, callback);
   }
   else{
-    callback(
-      utilities.make_json_response(200,
-        {
-          "Status" : message
-        }
-      )
-    );
+    utilities.make_json_response(callback, 200, { "Status" : message });
   }
 }
 
