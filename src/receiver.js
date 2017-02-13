@@ -21,7 +21,7 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
 module.exports.emailResend = (event, context, callback) => {
   if(!event.queryStringParameters){
     utilities.make_html_response(function(response){
-      callback(response);
+      callback(null, response);
     },
     "No transport service required");
   }
@@ -34,7 +34,7 @@ module.exports.emailResend = (event, context, callback) => {
     }
     else{
       utilities.make_html_response(function(response){
-        callback(response);
+        callback(null, response);
       },
       "Invalid Authorization Token");
     }
