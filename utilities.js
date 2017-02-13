@@ -114,7 +114,6 @@ var message_html = function(message, callback){
 
 var get_message_from_email = function(event){
   var messageJSON = {
-    "email"    : 1,
     "method"   : "POST",
     "url"      : event.queryStringParameters.url,
     "token"    : event.queryStringParameters.token,
