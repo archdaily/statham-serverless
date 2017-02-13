@@ -13,9 +13,10 @@ functions:
       - http:
           path: receive
           method: post
-  receiver-email:
+  receiverEmail:
     timeout: 6
     handler: src/receiver.emailResend
+    events:
       - http:
           path: receive
           method: get

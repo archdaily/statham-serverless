@@ -102,34 +102,6 @@ var number_chars = function(){
   return "0123456789";
 }
 
-var url_decode = function(code){
-  var decoded_body = decodeURIComponent(code);
-  return decoded_body;
-}
-
-var url_to_json = function(code){
-  var hash;
-  var myJson = {};
-  var hashes = code.slice(code.indexOf('?') + 1).split('&');
-  for (var i = 0; i < hashes.length; i++) {
-      hash = hashes[i].split('=');
-      myJson[hash[0]] = hash[1];
-  }
-  return myJson;
-}
-
-var get_url = function(decoded_json){
-  return decoded_json.url;
-}
-
-var get_body = function(decoded_json){
-  return decoded_json.body;
-}
-
-var get_token = function(decoded_json){
-  return decoded_json.token;
-}
-
 var message_html = function(message, callback){
   fs.readFile('views/resend.html', 'utf8', function (err,data) {
     if (err) {
