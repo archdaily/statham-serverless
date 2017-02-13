@@ -7,9 +7,7 @@ var cloudwatch  = require('cloudwatch');
 module.exports.receiveAndSendMessage = (event, context, callback) => {
   if(utilities.verifyTokenHeader(event)){
     var messageJSON = utilities.fetch_request_message(event, false);
-    deliver_message(messageJSON, function(response){
-      callback(null, response);
-    });
+    deliver_message(messageJSON, callback);
   }
   else{
     callback(null, endpoint_response(
@@ -20,44 +18,37 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
 
 module.exports.emailResend = (event, context, callback) => {
   if(!event.queryStringParameters){
-    utilities.make_html_response(function(response){
-      callback(null, response);
-    },
-    "No transport service required");
+    utilities.make_html_response(
+      "No transport service required",
+      function(response){
+        callback(null, response);
+      }
+    );
   }
   else{
     var messageJSON = utilities.fetch_request_message(event, true);
     if(messageJSON){
-      deliver_message(messageJSON, function(response){
-        callback(null, response);
-      });
+      deliver_message(messageJSON, callback);
     }
     else{
-      utilities.make_html_response(function(response){
-        callback(null, response);
-      },
-      "Invalid Authorization Token");
+      utilities.make_html_response("Invalid Authorization Token", callback);
     }
   }
 }
 
 var create_response = function(email, message, callback){
   if(email == 1){
-    utilities.make_html_response(function(response){
-      callback(response);
-    },
-    message);
+    utilities.make_html_response(message, callback);
   }
   else{
-    callback(endpoint_response(message));
+    callback(
+      utilities.make_json_response(200,
+        {
+          "Status" : message
+        }
+      )
+    );
   }
-}
-
-var endpoint_response = function(message){
-  var response = utilities.make_json_response(200,{
-    "Status" : message
-  });
-  return response;
 }
 
 var deliver_message = function(messageJSON, callback){
@@ -67,7 +58,7 @@ var deliver_message = function(messageJSON, callback){
         messageJSON.email,
         "The message was delivered successfully.",
         function(response){
-          callback(response);
+          callback(null, response);
         }
       );
     }
@@ -77,7 +68,7 @@ var deliver_message = function(messageJSON, callback){
         messageJSON.email,
         "The message could not be delivered but is in the queue of attempts.",
         function(response){
-          callback(response);
+          callback(null, response);
         }
       );
     }

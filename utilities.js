@@ -48,7 +48,7 @@ module.exports.fetch_request_message = function(event, email){
   return messageJSON;
 }
 
-module.exports.make_html_response = function(callback , message){
+module.exports.make_html_response = function(message, callback){
   message_html(message, function(data){
       var response = {
         statusCode: 200,
