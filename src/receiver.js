@@ -3,10 +3,12 @@
 var Message     = require('message');
 var utilities   = require('utilities');
 var cloudwatch  = require('cloudwatch');
+var validator   = require('validator');
 
 module.exports.receiveAndSendMessage = (event, context, callback) => {
-  if(utilities.verifyTokenHeader(event)){
-    var messageJSON = utilities.fetch_request_message(event, false);
+  var messageJSON = validator.validateParams(false, event);
+  if(messageJSON){
+    messageJSON = utilities.add_extras(event, messageJSON);
     deliver_message(false, messageJSON, callback);
   }
   else{
@@ -17,8 +19,9 @@ module.exports.receiveAndSendMessage = (event, context, callback) => {
 }
 
 module.exports.emailResend = (event, context, callback) => {
-  if(utilities.verifyTokenStringParameter(event)){
-    var messageJSON = utilities.fetch_request_message(event, true);
+  var messageJSON = validator.validateParams(true, event);
+  if(messageJSON){
+    messageJSON = utilities.add_extras(event, messageJSON);
     deliver_message(true, messageJSON, callback);
   }
   else{

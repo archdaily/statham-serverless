@@ -31,8 +31,6 @@ var validate_tries_message = function(messageJSON, callback){
     messageJSON.tries = 0;
   messageJSON.tries += 1;
 
-  messageJSON = add_attributes(messageJSON);
-
   if(messageJSON.tries > triesNum)
     error_message_to_email(messageJSON, function(response){
       callback(response);
