@@ -29,6 +29,7 @@ module.exports.add_extras = function(event, messageJSON){
   var urlDest = url.parse(messageJSON.url);
   messageJSON.destination = urlDest.pathname;
   messageJSON.source = event.headers.Origin;
+  if(!messageJSON.source) messageJSON.source = "email";
   messageJSON.resource = event.headers["X-Forwarded-Proto"] + "://" + event.headers["Host"] + "/" + event.requestContext["stage"] + event.path;
   messageJSON.id = event.requestContext.requestId;
   return messageJSON;

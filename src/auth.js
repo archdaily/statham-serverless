@@ -7,13 +7,21 @@ var pass = config.get("passwordJWK");
 
 module.exports.getToken = (event, context, callback) => {
   if(event.headers.Password == pass){
-    callback(null, utilities.make_json_response(200,{
-      "token" : utilities.createToken(event.requestContext.identity.sourceIp)
-    }));
+    utilities.make_json_response(function(response){
+      callback(null, response);
+    },
+    200,
+    {
+      "Token" : utilities.createToken(event.requestContext.identity.sourceIp)
+    });
   }
   else{
-    callback(null, utilities.make_json_response(400,{
-      "error" : "Invalid or missing Password"
-    }));
+    utilities.make_json_response(function(response){
+      callback(null, response);
+    },
+    400,
+    {
+      "Error" : "Invalid or missing password"
+    });
   }
 };

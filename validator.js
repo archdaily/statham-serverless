@@ -67,13 +67,20 @@ var verifyToken = function(token){
 }
 
 var verifyURL = function(url){
+  if(url == null || url == '') return false;
   return true;
+  ///tiene q tener formato de url
 }
 
 var verifyBody = function(body){
-  return true;
+  for(var i in body) { return true; }
+  return false;
 }
 
 var verifyMethod = function(method){
-  return true;
+  if(method.toUpperCase() == 'POST' || method.toUpperCase() == 'GET')
+    return true;
+  return false;
+
+  ///tiene q ser POST
 }
