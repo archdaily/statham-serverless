@@ -90,12 +90,3 @@ var message_html = function(message, callback){
     callback(data_message);
   });
 }
-
-var get_message_from_email = function(event){
-  var messageJSON = {
-    "method"   : "POST",
-    "url"      : event.queryStringParameters.url,
-    "body"     : event.queryStringParameters.body
-  }
-  return messageJSON;
-}
