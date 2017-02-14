@@ -34,6 +34,12 @@ Set your AWS credentials and secret token on the file 'credentials.json.sample' 
 Into the file 'config.json' you have to set the values:
 * CycleExpression: The expresion that defines how much time will wait Statham to do another attempt.
 * TriesNum: Number of times that Statham tries to send a message before sending a repórt to the email into *EmailNotification* parameter.
-* OriginFilters: An array of origins that Statham accept when the message is sended from a email.
 * EmailNotification: A e-mail direction to send the report when statham reached the max number of attempts (*TriesNum*).
 
+### Deploying
+
+On a terminal into statham-serverless folder:
+
+* `serverless deploy` or `sls deploy`
+
+Now you will have three endpoints availables to make requests to Statham, more info [here](https://github.com/PNet/statham-serverless/wiki)
