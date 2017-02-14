@@ -3,81 +3,61 @@
 var Message     = require('message');
 var utilities   = require('utilities');
 var cloudwatch  = require('cloudwatch');
+var validator   = require('validator');
 
 module.exports.receiveAndSendMessage = (event, context, callback) => {
-  if(utilities.verifyTokenHeader(event)){
-    var messageJSON = utilities.fetch_request_message(event, false);
-    deliver_message(messageJSON, function(response){
-      callback(null, response);
-    });
+  var messageJSON = validator.validateParams(false, event);
+  if(messageJSON){
+    messageJSON = utilities.add_extras(event, messageJSON);
+    deliver_message(false, messageJSON, callback);
   }
   else{
-    callback(null, endpoint_response(
-      "Invalid Authorization Token"
-    ));
+    create_response(false, "Invalid or missing auth token", function(response){
+      callback(null, response);
+    });
   }
 }
 
 module.exports.emailResend = (event, context, callback) => {
-  if(!event.queryStringParameters){
-    utilities.make_html_response(function(response){
-      callback(null, response);
-    },
-    "No transport service required");
+  var messageJSON = validator.validateParams(true, event);
+  if(messageJSON){
+    messageJSON = utilities.add_extras(event, messageJSON);
+    deliver_message(true, messageJSON, callback);
   }
   else{
-    var messageJSON = utilities.fetch_request_message(event, true);
-    if(messageJSON){
-      deliver_message(messageJSON, function(response){
-        callback(null, response);
-      });
-    }
-    else{
-      utilities.make_html_response(function(response){
-        callback(null, response);
-      },
-      "Invalid Authorization Token");
-    }
+    create_response(true, "No transport service required", function(response){
+      callback(null, response);
+    });
   }
 }
 
 var create_response = function(email, message, callback){
-  if(email == 1){
-    utilities.make_html_response(function(response){
-      callback(response);
-    },
-    message);
+  if(email){
+    utilities.make_html_response(message, callback);
   }
   else{
-    callback(endpoint_response(message));
+    utilities.make_json_response(callback, 200, { "Status" : message });
   }
 }
 
-var endpoint_response = function(message){
-  var response = utilities.make_json_response(200,{
-    "Status" : message
-  });
-  return response;
-}
-
-var deliver_message = function(messageJSON, callback){
+var deliver_message = function(email, messageJSON, callback){
   Message.send(messageJSON, function(sent){
     if(sent){
       create_response(
-        messageJSON.email,
+        email,
         "The message was delivered successfully.",
         function(response){
-          callback(response);
+          callback(null, response);
         }
       );
     }
     else{
       cloudwatch.enable_rule();
       create_response(
-        messageJSON.email,
+        email,
         "The message could not be delivered but is in the queue of attempts.",
         function(response){
-          callback(response);
+          callback(null, response);
         }
       );
     }

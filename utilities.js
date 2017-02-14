@@ -1,21 +1,12 @@
 'use strict';
 var fs                = require('fs');
 var ejs               = require('ejs');
+var url               = require('url');
 var jwt               = require('jsonwebtoken');
 var moment            = require('moment');
 
 var credentials       = require('nconf').file('credentials.json');
 var secretToken       = credentials.get('secretToken');
-
-Array.prototype.contains = function(obj) {
-    var i = this.length;
-    while (i--) {
-        if (this[i] === obj) {
-            return true;
-        }
-    }
-    return false;
-}
 
 module.exports.createToken = function(origin) {
   var payload = {
@@ -26,48 +17,33 @@ module.exports.createToken = function(origin) {
   return jwt.sign(payload, secretToken);
 };
 
-module.exports.verifyTokenHeader = function(event){
-  if(!event.headers.Authorization) {
-    return false;
-  }
-  var tokenJWT = event.headers.Authorization;
-
-  return verifyToken(tokenJWT);
-}
-
-module.exports.make_json_response = function(statusCode,body){
+module.exports.make_json_response = function(callback, statusCode, body){
   var response = {
     statusCode: statusCode,
     body: JSON.stringify(body)
   };
-  return response;
+  callback(response);
 }
 
-module.exports.fetch_request_message = function(event, email){
-  var messageJSON;
-  if(email){
-    messageJSON = get_message_from_email(event);
-    if(!verifyToken(messageJSON.token)) return null;
-  }
-  else{
-    messageJSON = JSON.parse(event.body);
-  }
+module.exports.add_extras = function(event, messageJSON){
+  var urlDest = url.parse(messageJSON.url);
+  messageJSON.destination = urlDest.pathname;
   messageJSON.source = event.headers.Origin;
   messageJSON.resource = event.headers["X-Forwarded-Proto"] + "://" + event.headers["Host"] + "/" + event.requestContext["stage"] + event.path;
   messageJSON.id = event.requestContext.requestId;
   return messageJSON;
 }
 
-module.exports.make_html_response = function(callback , message){
+module.exports.make_html_response = function(message, callback){
   message_html(message, function(data){
-      var response = {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "text/html"
-        },
-        body: data
-      };
-      callback(response);
+    var response = {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "text/html"
+      },
+      body: data
+    };
+    callback(response);
   });
 }
 
@@ -116,20 +92,9 @@ var message_html = function(message, callback){
 
 var get_message_from_email = function(event){
   var messageJSON = {
-    "email"    : 1,
     "method"   : "POST",
     "url"      : event.queryStringParameters.url,
-    "token"    : event.queryStringParameters.token,
     "body"     : event.queryStringParameters.body
   }
   return messageJSON;
-}
-
-var verifyToken = function(token){
-  try {
-    var decoded = jwt.verify(token, secretToken);
-    return true;
-  } catch(err) {
-    return false;
-  }
 }

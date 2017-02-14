@@ -31,8 +31,6 @@ var validate_tries_message = function(messageJSON, callback){
     messageJSON.tries = 0;
   messageJSON.tries += 1;
 
-  messageJSON = add_attributes(messageJSON);
-
   if(messageJSON.tries > triesNum)
     error_message_to_email(messageJSON, function(response){
       callback(response);
@@ -45,10 +43,9 @@ var validate_tries_message = function(messageJSON, callback){
 
 var error_message_to_email = function(messageJSON, callback){
   ses.mail_message_generator(messageJSON);
-  var response = utilities.make_json_response(200,{
+  utilities.make_json_response(callback, 200, {
     "response" : "email sended"
   });
-  callback(response);
 }
 
 var get_string_body = function(messageJSON){
@@ -80,17 +77,15 @@ var make_https_request = function(options, data, callback){
       dataResponse += chunk;
     });
     res.on('end', () => {
-      var response = utilities.make_json_response(200,{
+      utilities.make_json_response(callback, 200, {
         "success" : JSON.parse(dataResponse)
       });
-      callback(response);
     });
   });
   req.on('error', (e) => {
-    var response = utilities.make_json_response(400,{
+    utilities.make_json_response(callback, 400, {
       "error" : e.message
-    })
-    callback(response);
+    });
   });
   req.write(data);
   req.end();
@@ -104,17 +99,15 @@ var make_http_request = function(options, data, callback){
       dataResponse += chunk;
     });
     res.on('end', () => {
-      var response = utilities.make_json_response(200,{
+      var response = utilities.make_json_response(callback, 200, {
         "success" : dataResponse
       });
-      callback(response);
     });
   });
   req.on('error', (e) => {
-    var response = utilities.make_json_response(400,{
+    var response = utilities.make_json_response(callback, 400, {
       "error" : e.message
-    })
-    callback(response);
+    });
   });
   req.write(data);
   req.end();
