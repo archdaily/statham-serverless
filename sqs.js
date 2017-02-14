@@ -63,14 +63,14 @@ var delete_msg_trunk_internal = function(ReceiptHandle){
 
 var get_message_trunk_async = function(callback){
   create_get_trunk_url(function(TrunkURL){
-    var params = receiveMessage_settings();
+    var params = receiveMessage_settings(TrunkURL);
     sqs.receiveMessage(params, function(err, data) {
       if (err) console.log(err, err.stack);
       else{
         if(data.Messages){
           var messages = [];
           for(var i = 0; i < data.Messages.length; i++){
-            var message_statham = recontitution_message(data);
+            var message_statham = recontitution_message(data, i);
             messagesJSON['Messages'].push(message_statham);
             delete_msg_trunk_internal(data.Messages[i].ReceiptHandle);
           }
@@ -84,7 +84,7 @@ var get_message_trunk_async = function(callback){
   });
 }
 
-var receiveMessage_settings = function(){
+var receiveMessage_settings = function(TrunkURL){
   var params = {
     AttributeNames: [
       "All"
@@ -98,7 +98,7 @@ var receiveMessage_settings = function(){
   return params;
 }
 
-var recontitution_message = function(data){
+var recontitution_message = function(data, i){
   var msg = {
     'Message' : {
       'method' : data.Messages[i].MessageAttributes.method.StringValue,
