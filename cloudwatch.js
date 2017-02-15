@@ -1,16 +1,16 @@
 'use strict';
 
-var AWS                 = require('aws-sdk');
-var config              = require('nconf').file('config.json');
+var AWS = require('aws-sdk');
+var config = require('nconf').file('config.json');
 
 AWS.config.loadFromPath('./credentials.json');
 
-var cloudwatchevents    = new AWS.CloudWatchEvents();
-var lambda              = new AWS.Lambda();
-var scheduleExpression  = config.get('CycleExpression');
-var StathamRuleName     = "StathamCycle";
+var cloudwatchevents = new AWS.CloudWatchEvents();
+var lambda = new AWS.Lambda();
+var scheduleExpression = config.get('CycleExpression');
+var StathamRuleName = "StathamCycle";
 
-module.exports.enable_rule = function(){
+module.exports.enable_rule = function() {
   var params = {
     Name: StathamRuleName,
     ScheduleExpression: scheduleExpression,
@@ -21,7 +21,7 @@ module.exports.enable_rule = function(){
   });
 }
 
-module.exports.disable_rule = function(){
+module.exports.disable_rule = function() {
   var params = {
     Name: StathamRuleName,
     ScheduleExpression: scheduleExpression,
@@ -32,18 +32,17 @@ module.exports.disable_rule = function(){
   });
 }
 
-var exist_rule = function(callback){
+var exist_rule = function(callback) {
   var params = {
     Limit: 1,
     NamePrefix: StathamRuleName
   };
   cloudwatchevents.listRules(params, function(err, data) {
-    if (err){
+    if (err) {
       console.log(err, err.stack);
       callback(false);
-    }
-    else{
-      if(data.Rules.length == 1) callback(true);
+    } else {
+      if (data.Rules.length == 1) callback(true);
       else callback(false);
     }
   });
