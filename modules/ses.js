@@ -4,7 +4,7 @@ var fs = require('fs');
 var ejs = require('ejs');
 var AWS = require('aws-sdk');
 var config = require('nconf').file('config.json');
-var utilities = require('utilities');
+var utilities = require('modules/utilities');
 
 AWS.config.loadFromPath('./credentials.json');
 

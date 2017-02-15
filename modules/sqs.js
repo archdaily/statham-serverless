@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var utilities = require('utilities');
+var utilities = require('modules/utilities');
 var AWS = require('aws-sdk');
 var config = require('nconf').file('config.json');
 

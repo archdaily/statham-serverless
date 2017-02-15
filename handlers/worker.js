@@ -1,8 +1,8 @@
 'use strict';
-var Message = require('message');
-var sqs = require('sqs');
+var Message = require('modules/message');
+var sqs = require('modules/sqs');
 var async = require('async');
-var cloudwatch = require('cloudwatch');
+var cloudwatch = require('modules/cloudwatch');
 
 module.exports.workFromTrunk = (event, context, callback) => {
   sqs.get_list_trunk(function(listMsg) {
