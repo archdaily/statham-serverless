@@ -35,7 +35,7 @@ module.exports.add_extras = function(event, messageJSON) {
   return messageJSON;
 }
 
-module.exports.make_html_response = function(message, callback) {
+var make_html_response = function(message, callback) {
   message_html(message, function(data) {
     var response = {
       statusCode: 200,
@@ -50,10 +50,18 @@ module.exports.make_html_response = function(message, callback) {
 
 module.exports.create_response = function(email, message, callback) {
   if (email) {
-    utilities.make_html_response(message, callback);
+    make_html_response(message, callback);
   } else {
-    utilities.make_json_response(callback, 200, { "Status": message });
+    make_json_response(callback, 200, { "Status": message });
   }
+}
+
+var make_json_response = function(callback, statusCode, body) {
+  var response = {
+    statusCode: statusCode,
+    body: JSON.stringify(body)
+  };
+  callback(response);
 }
 
 module.exports.get_random_char = function() {
