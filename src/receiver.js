@@ -19,7 +19,8 @@ var validate_and_send = function(isFromEmail, event, callback) {
     messageJSON = utilities.add_extras(event, messageJSON);
     deliver_message(isFromEmail, messageJSON, callback);
   } else {
-    utilities.create_response(isFromEmail, "There is an error with the request. Please verify.",
+    utilities.create_response(isFromEmail,
+      "There is an error with the request. Please verify.",
       function(response) {
         callback(null, response);
       }

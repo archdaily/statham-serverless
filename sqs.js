@@ -98,15 +98,16 @@ var receiveMessage_settings = function(TrunkURL) {
 }
 
 var recontitution_message = function(data, i) {
+  var attributes = data.Messages[i].MessageAttributes;
   var msg = {
     'Message': {
-      'method': data.Messages[i].MessageAttributes.method.StringValue,
-      'url': data.Messages[i].MessageAttributes.url.StringValue,
-      'destination': data.Messages[i].MessageAttributes.destination.StringValue,
-      'error': data.Messages[i].MessageAttributes.error.StringValue,
-      'id': data.Messages[i].MessageAttributes.id.StringValue + utilities.get_random_char(),
-      'source': data.Messages[i].MessageAttributes.source.StringValue,
-      'tries': parseInt(data.Messages[i].MessageAttributes.tries.StringValue),
+      'method': attributes.method.StringValue,
+      'url': attributes.url.StringValue,
+      'destination': attributes.destination.StringValue,
+      'error': attributes.error.StringValue,
+      'id': attributes.id.StringValue + utilities.get_random_char(),
+      'source': attributes.source.StringValue,
+      'tries': parseInt(attributes.tries.StringValue),
       'body': JSON.parse(data.Messages[i].Body)
     },
     'MessageId': data.Messages[i].MessageId,
@@ -181,7 +182,7 @@ var get_count_trunk_async = function(callback) {
       QueueUrl: TrunkURL
     };
     sqs.getQueueAttributes(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
+      if (err) console.log(err, err.stack);
       else {
         var number = data.Attributes.ApproximateNumberOfMessages;
         callback(number);

@@ -30,7 +30,10 @@ module.exports.add_extras = function(event, messageJSON) {
   messageJSON.destination = urlDest.pathname;
   messageJSON.source = event.headers.Origin;
   if (!messageJSON.source) messageJSON.source = "email";
-  messageJSON.resource = event.headers["X-Forwarded-Proto"] + "://" + event.headers["Host"] + "/" + event.requestContext["stage"] + event.path;
+  messageJSON.resource =
+    event.headers["X-Forwarded-Proto"] +
+    "://" + event.headers["Host"] +
+    "/" + event.requestContext["stage"] + event.path;
   messageJSON.id = event.requestContext.requestId;
   return messageJSON;
 }
@@ -71,7 +74,8 @@ module.exports.get_random_char = function() {
 }
 
 var get_random_number = function(lowerBound, upperBound) {
-  var random = Math.floor(Math.random() * (upperBound - lowerBound)) + lowerBound;
+  var random =
+    Math.floor(Math.random() * (upperBound - lowerBound)) + lowerBound;
   return random;
 }
 
