@@ -1,46 +1,44 @@
-var jwt               = require('jsonwebtoken');
+var jwt = require('jsonwebtoken');
 
-var credentials       = require('nconf').file('credentials.json');
-var secretToken       = credentials.get('secretToken');
+var credentials = require('nconf').file('credentials.json');
+var secretToken = credentials.get('secretToken');
 
 module.exports.validateParams = function(email, event) {
-  try{
+  try {
     var params = getParameters(email, event);
-  }
-  catch(err){
+  } catch (err) {
     return null;
   }
-  if(!params) return null;
-  if(!verifyURL(params.url)) return null;
-  if(!verifyBody(params.body)) return null;
-  if(!verifyMethod(params.method)) return null;
+  if (!params) return null;
+  if (!verifyURL(params.url)) return null;
+  if (!verifyBody(params.body)) return null;
+  if (!verifyMethod(params.method)) return null;
   return params;
 };
 
-var getParameters = function(email, event){
+var getParameters = function(email, event) {
   var params;
-  if(email){
-    if(!verifyTokenStringParameter(event)) return null;
+  if (email) {
+    if (!verifyTokenStringParameter(event)) return null;
     params = {
-      "url"     : event.queryStringParameters.url,
-      "method"  : "POST",
-      "body"    : event.queryStringParameters.body
+      "url": event.queryStringParameters.url,
+      "method": "POST",
+      "body": event.queryStringParameters.body
     }
-  }
-  else{
-    if(!verifyTokenHeader(event)) return null;
+  } else {
+    if (!verifyTokenHeader(event)) return null;
     var body = JSON.parse(event.body);
     params = {
-      "url"     : body.url,
-      "method"  : body.method,
-      "body"    : body.body
+      "url": body.url,
+      "method": body.method,
+      "body": body.body
     }
   }
   return params;
 }
 
-var verifyTokenHeader = function(event){
-  if(!event.headers.Authorization) {
+var verifyTokenHeader = function(event) {
+  if (!event.headers.Authorization) {
     return false;
   }
   var tokenJWT = event.headers.Authorization;
@@ -48,39 +46,36 @@ var verifyTokenHeader = function(event){
   return verifyToken(tokenJWT);
 }
 
-var verifyTokenStringParameter = function(event){
-  if(!event.queryStringParameters) return false;
-  else if(!event.queryStringParameters.token) return false;
+var verifyTokenStringParameter = function(event) {
+  if (!event.queryStringParameters) return false;
+  else if (!event.queryStringParameters.token) return false;
 
   var tokenJWT = event.queryStringParameters.token;
 
   return verifyToken(tokenJWT);
 }
 
-var verifyToken = function(token){
+var verifyToken = function(token) {
   try {
     var decoded = jwt.verify(token, secretToken);
     return true;
-  } catch(err) {
+  } catch (err) {
     return false;
   }
 }
 
-var verifyURL = function(url){
-  if(url == null || url == '') return false;
+var verifyURL = function(url) {
+  if (url == null || url == '') return false;
   return true;
-  ///tiene q tener formato de url
 }
 
-var verifyBody = function(body){
-  for(var i in body) { return true; }
+var verifyBody = function(body) {
+  for (var i in body) { return true; }
   return false;
 }
 
-var verifyMethod = function(method){
-  if(method.toUpperCase() == 'POST' || method.toUpperCase() == 'GET')
+var verifyMethod = function(method) {
+  if (method.toUpperCase() == 'POST' || method.toUpperCase() == 'GET')
     return true;
   return false;
-
-  ///tiene q ser POST
 }
