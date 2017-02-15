@@ -23,6 +23,11 @@ functions:
   worker:
     timeout: 6
     handler: src/worker.workFromTrunk
+    events:
+      - schedule:
+          name: StathamCycle
+          rate: ${file(/config.json):CycleExpression}
+          enabled: false
   auth:
     timeout: 3
     handler: src/auth.getToken
