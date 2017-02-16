@@ -4,12 +4,7 @@ var credentials = require('nconf').file('credentials.json');
 var secretToken = credentials.get('secretToken');
 
 module.exports.validateParams = function(email, event) {
-  try {
-    var params = getParameters(email, event);
-  } catch (err) {
-    return null;
-  }
-  if (!params) return null;
+  var params = getParameters(email, event);
   if (!verifyURL(params.url)) return null;
   if (!verifyBody(params.body)) return null;
   if (!verifyMethod(params.method)) return null;
