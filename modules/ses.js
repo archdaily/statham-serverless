@@ -43,7 +43,7 @@ var render_body_html = function(message, callback) {
       lambda: message.resource,
       method: message.method,
       destination: message.destination,
-      source: message.source,
+      origin: message.origin,
       url: message.url,
       error: message.error,
       token: utilities.createToken("email"),

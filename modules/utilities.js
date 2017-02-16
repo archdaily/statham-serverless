@@ -28,10 +28,9 @@ module.exports.make_json_response = function(callback, statusCode, body) {
 module.exports.add_extras = function(event, messageJSON) {
   var urlDest = url.parse(messageJSON.url);
   messageJSON.destination = urlDest.pathname;
-  messageJSON.source = event.headers.Origin;
-  if (!messageJSON.source) messageJSON.source = event.requestContext.identity.userAgent;
-  if (!messageJSON.source) messageJSON.source = event.requestContext.identity.sourceIp;
-  if (!messageJSON.source) messageJSON.source = 'anonimous';
+  messageJSON.origin = event.headers.Origin;
+  if (!messageJSON.origin) messageJSON.origin = event.requestContext.identity.sourceIp;
+  if (!messageJSON.origin) messageJSON.origin = 'undefined';
   messageJSON.resource =
     event.headers["X-Forwarded-Proto"] +
     "://" + event.headers["Host"] +
