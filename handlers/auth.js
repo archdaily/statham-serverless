@@ -6,7 +6,7 @@ var config = require('nconf').file('credentials.json');
 var pass = config.get("passwordJWK");
 
 module.exports.getToken = (event, context, callback) => {
-  if (event.headers.password == pass) {
+  if (event.headers.Authorization == pass) {
     utilities.make_json_response(function(response) {
         callback(null, response);
       },
@@ -18,7 +18,7 @@ module.exports.getToken = (event, context, callback) => {
         callback(null, response);
       },
       400, {
-        "Error": "Invalid or missing password"
+        "Error": "Invalid or Missing Authorization"
       });
   }
 };

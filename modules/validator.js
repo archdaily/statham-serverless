@@ -65,16 +65,18 @@ var verifyToken = function(token) {
 }
 
 var verifyURL = function(url) {
-  if (url == null || url == '') return false;
+  if (!url || url == '') return false;
   return true;
 }
 
 var verifyBody = function(body) {
+  if (!body) return false;
   for (var i in body) { return true; }
   return false;
 }
 
 var verifyMethod = function(method) {
+  if (!method) return false;
   if (method.toUpperCase() == 'POST' || method.toUpperCase() == 'GET')
     return true;
   return false;

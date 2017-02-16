@@ -31,7 +31,7 @@ var validate_and_send = function(isFromEmail, event, callback) {
 var deliver_message = function(isHTML, messageJSON, callback) {
   Message.send(messageJSON, function(sent) {
     if (sent) {
-      create_response(isHTML, "The message was delivered successfully.",
+      utilities.create_response(isHTML, "The message was delivered successfully.",
         function(response) {
           callback(null, response);
         }
