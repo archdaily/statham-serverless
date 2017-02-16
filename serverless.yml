@@ -7,31 +7,36 @@ provider:
 
 functions:
   receiver:
-    timeout: 6
-    handler: src/receiver.receiveAndSendMessage
+    timeout: 3
+    handler: handlers/receiver.receiveAndSendMessage
     events:
       - http:
           path: receive
           method: post
   receiverEmail:
-    timeout: 6
-    handler: src/receiver.emailResend
+    timeout: 3
+    handler: handlers/receiver.emailResend
     events:
       - http:
           path: receive
           method: get
   worker:
-    timeout: 6
-    handler: src/worker.workFromTrunk
+    timeout: 10
+    handler: handlers/worker.workFromTrunk
+    events:
+      - schedule:
+          name: StathamCycle
+          rate: ${file(/config.json):CycleExpression}
+          enabled: false
   auth:
     timeout: 3
-    handler: src/auth.getToken
+    handler: handlers/auth.getToken
     events:
       - http:
           path: getToken
           method: get
-  receiverMessage:
-    handler: handler.receiver
+  tester:
+    handler: handler.tester
     events:
       - http:
           path: testingDestination

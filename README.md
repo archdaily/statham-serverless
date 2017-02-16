@@ -32,7 +32,7 @@ After that, npm should have created a folder named node_modules with all the lib
 Set your AWS credentials and secret token on the file 'credentials.json.sample' and rename it to 'credentials.json'.
 
 Into the file 'config.json' you have to set the values:
-* CycleExpression: The expresion that defines how much time will wait Statham to do another attempt.
+* CycleExpression: The expresion that defines how much time will wait Statham to do another attempt. For more info about scheduler expressions visit [here](http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html).
 * TriesNum: Number of times that Statham tries to send a message before sending a repórt to the email into *EmailNotification* parameter.
 * EmailNotification: A e-mail direction to send the report when statham reached the max number of attempts (*TriesNum*).
 

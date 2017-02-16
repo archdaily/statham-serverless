@@ -1,41 +1,41 @@
 'use strict';
 
-var async             = require('async');
-var utilities         = require('utilities');
-var AWS               = require('aws-sdk');
-var config            = require('nconf').file('config.json');
+var async = require('async');
+var utilities = require('modules/utilities');
+var AWS = require('aws-sdk');
+var config = require('nconf').file('config.json');
 
 AWS.config.loadFromPath('./credentials.json');
 
-var sqs  = new AWS.SQS();
+var sqs = new AWS.SQS();
 
 var messagesJSON = {
-    'Messages' : []
+  'Messages': []
 };
 
-module.exports.get_list_trunk = function(callback){
+module.exports.get_list_trunk = function(callback) {
   messagesJSON.Messages = [];
   async.forever(
-    function(next){
-      get_message_trunk_async(function(err, response){
-        if(err) next(err);
-        else{
+    function(next) {
+      get_message_trunk_async(function(err, response) {
+        if (err) next(err);
+        else {
           next();
         }
       });
     },
-    function(err){
+    function(err) {
       callback(messagesJSON);
     }
   );
 }
 
-module.exports.delete_msg_trunk = function(ReceiptHandle){
+module.exports.delete_msg_trunk = function(ReceiptHandle) {
   delete_msg_trunk_internal(ReceiptHandle);
 }
 
-module.exports.send_msg_trunk = function(message){
-  create_get_trunk_url(function(TrunkURL){
+module.exports.send_msg_trunk = function(message) {
+  create_get_trunk_url(function(TrunkURL) {
     var params = disarm_message(message, TrunkURL);
     sqs.sendMessage(params, function(err, data) {
       if (err) console.log(err, err.stack);
@@ -43,14 +43,14 @@ module.exports.send_msg_trunk = function(message){
   });
 }
 
-module.exports.get_count_trunk = function(callback){
-  get_count_trunk_async(function(response){
+module.exports.get_count_trunk = function(callback) {
+  get_count_trunk_async(function(response) {
     callback(response);
   });
 }
 
-var delete_msg_trunk_internal = function(ReceiptHandle){
-  create_get_trunk_url(function(TrunkURL){
+var delete_msg_trunk_internal = function(ReceiptHandle) {
+  create_get_trunk_url(function(TrunkURL) {
     var params = {
       QueueUrl: TrunkURL,
       ReceiptHandle: ReceiptHandle
@@ -61,22 +61,21 @@ var delete_msg_trunk_internal = function(ReceiptHandle){
   });
 }
 
-var get_message_trunk_async = function(callback){
-  create_get_trunk_url(function(TrunkURL){
-    var params = receiveMessage_settings();
+var get_message_trunk_async = function(callback) {
+  create_get_trunk_url(function(TrunkURL) {
+    var params = receiveMessage_settings(TrunkURL);
     sqs.receiveMessage(params, function(err, data) {
       if (err) console.log(err, err.stack);
-      else{
-        if(data.Messages){
+      else {
+        if (data.Messages) {
           var messages = [];
-          for(var i = 0; i < data.Messages.length; i++){
-            var message_statham = recontitution_message(data);
+          for (var i = 0; i < data.Messages.length; i++) {
+            var message_statham = recontitution_message(data, i);
             messagesJSON['Messages'].push(message_statham);
             delete_msg_trunk_internal(data.Messages[i].ReceiptHandle);
           }
           callback(null, messages);
-        }
-        else{
+        } else {
           callback("SQS empty");
         }
       }
@@ -84,7 +83,7 @@ var get_message_trunk_async = function(callback){
   });
 }
 
-var receiveMessage_settings = function(){
+var receiveMessage_settings = function(TrunkURL) {
   var params = {
     AttributeNames: [
       "All"
@@ -98,25 +97,26 @@ var receiveMessage_settings = function(){
   return params;
 }
 
-var recontitution_message = function(data){
+var recontitution_message = function(data, i) {
+  var attributes = data.Messages[i].MessageAttributes;
   var msg = {
-    'Message' : {
-      'method' : data.Messages[i].MessageAttributes.method.StringValue,
-      'url' : data.Messages[i].MessageAttributes.url.StringValue,
-      'destination' : data.Messages[i].MessageAttributes.destination.StringValue,
-      'error' : data.Messages[i].MessageAttributes.error.StringValue,
-      'id' : data.Messages[i].MessageAttributes.id.StringValue + utilities.get_random_char(),
-      'source' : data.Messages[i].MessageAttributes.source.StringValue,
-      'tries' : parseInt(data.Messages[i].MessageAttributes.tries.StringValue),
-      'body' : JSON.parse(data.Messages[i].Body)
+    'Message': {
+      'method': attributes.method.StringValue,
+      'url': attributes.url.StringValue,
+      'destination': attributes.destination.StringValue,
+      'error': attributes.error.StringValue,
+      'id': attributes.id.StringValue + utilities.get_random_char(),
+      'source': attributes.source.StringValue,
+      'tries': parseInt(attributes.tries.StringValue),
+      'body': JSON.parse(data.Messages[i].Body)
     },
-    'MessageId' : data.Messages[i].MessageId,
-    'ReceiptHandle' : data.Messages[i].ReceiptHandle
+    'MessageId': data.Messages[i].MessageId,
+    'ReceiptHandle': data.Messages[i].ReceiptHandle
   };
   return msg;
 }
 
-var disarm_message =function(message, TrunkURL){
+var disarm_message = function(message, TrunkURL) {
   var params = {
     MessageAttributes: {
       "method": {
@@ -156,7 +156,7 @@ var disarm_message =function(message, TrunkURL){
   return params;
 }
 
-var create_get_trunk_url = function(callback){
+var create_get_trunk_url = function(callback) {
   var params = {
     QueueName: 'StathamTrunk.fifo',
     Attributes: {
@@ -167,14 +167,14 @@ var create_get_trunk_url = function(callback){
   };
   sqs.createQueue(params, function(err, data) {
     if (err) console.log(err, err.stack);
-    else{
+    else {
       callback(data.QueueUrl);
     }
   });
 }
 
-var get_count_trunk_async = function(callback){
-  create_get_trunk_url(function(TrunkURL){
+var get_count_trunk_async = function(callback) {
+  create_get_trunk_url(function(TrunkURL) {
     var params = {
       AttributeNames: [
         "All"
@@ -182,8 +182,8 @@ var get_count_trunk_async = function(callback){
       QueueUrl: TrunkURL
     };
     sqs.getQueueAttributes(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else{
+      if (err) console.log(err, err.stack);
+      else {
         var number = data.Attributes.ApproximateNumberOfMessages;
         callback(number);
       }
