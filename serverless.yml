@@ -7,22 +7,14 @@ provider:
 
 functions:
   receiver:
-<<<<<<< HEAD
     timeout: 3
-=======
-    timeout: 10
->>>>>>> a51677ffa7383cdae6f29149b47815a40a19699b
     handler: handlers/receiver.receiveAndSendMessage
     events:
       - http:
           path: receive
           method: post
   receiverEmail:
-<<<<<<< HEAD
     timeout: 3
-=======
-    timeout: 10
->>>>>>> a51677ffa7383cdae6f29149b47815a40a19699b
     handler: handlers/receiver.emailResend
     events:
       - http:
