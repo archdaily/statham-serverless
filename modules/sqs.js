@@ -108,6 +108,7 @@ var recontitution_message = function(data, i) {
       'id': attributes.id.StringValue + utilities.get_random_char(),
       'origin': attributes.origin.StringValue,
       'tries': parseInt(attributes.tries.StringValue),
+      'resource': attributes.resource.StringValue,
       'body': JSON.parse(data.Messages[i].Body)
     },
     'MessageId': data.Messages[i].MessageId,
@@ -146,6 +147,10 @@ var disarm_message = function(message, TrunkURL) {
       "tries": {
         DataType: "Number",
         StringValue: message.tries.toString()
+      },
+      "resource": {
+        DataType: "String",
+        StringValue: message.resource
       }
     },
     MessageBody: JSON.stringify(message.body),
