@@ -1,0 +1,17 @@
+version: '2'
+services:
+  statham:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/home/app
+      - /home/app/node_modules
+    ports:
+      - '8000:8000'
+    environment:
+      - VIRTUAL_HOST=statham.dev.archdaily.com
+networks:
+  default:
+    external:
+      name: nginxproxy_archdaily

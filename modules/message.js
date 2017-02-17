@@ -3,9 +3,9 @@
 var https = require('https');
 var http = require('http');
 var url = require('url');
-var utilities = require('modules/utilities');
-var ses = require('modules/ses');
-var sqs = require('modules/sqs');
+var utilities = require('./utilities');
+var ses = require('./ses');
+var sqs = require('./sqs');
 var config = require('nconf').file('config.json');
 
 var triesNum = parseInt(config.get('TriesNum'));
@@ -118,8 +118,6 @@ var send_message = function(messageJSON, callback) {
   var options = serialize_options(messageJSON);
 
   var protocol = url.parse(messageJSON.url).protocol;
-  console.log("message sent:");
-  console.log(postData);
   if (protocol == 'https:') {
     make_https_request(options, postData, function(response) {
       var body = JSON.parse(response.body);
