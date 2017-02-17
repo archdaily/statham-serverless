@@ -7,6 +7,5 @@ module.exports.tester = (event, context, callback) => {
       input: event.body
     })
   };
-  console.log(event.body);
   callback(null, response);
 };

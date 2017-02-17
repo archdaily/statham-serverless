@@ -118,8 +118,6 @@ var send_message = function(messageJSON, callback) {
   var options = serialize_options(messageJSON);
 
   var protocol = url.parse(messageJSON.url).protocol;
-  console.log("message sent:");
-  console.log(postData);
   if (protocol == 'https:') {
     make_https_request(options, postData, function(response) {
       var body = JSON.parse(response.body);
