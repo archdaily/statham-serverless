@@ -1,0 +1,52 @@
+module.exports = {
+  "resource": "/receive",
+  "path": "/receive",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+    "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpcCI6IjUyLjIzLjE3MS4xNDUiLCJpYXQiOjE0ODcyNzgwODAsImV4cCI6MTQ4ODQ4NzY4MH0.OLRBlT9dWHHA931eaJw3uhIcX0AQAGNgMajC6U4cFW8",
+    "CloudFront-Forwarded-Proto": "https",
+    "CloudFront-Is-Desktop-Viewer": "true",
+    "CloudFront-Is-Mobile-Viewer": "false",
+    "CloudFront-Is-SmartTV-Viewer": "false",
+    "CloudFront-Is-Tablet-Viewer": "false",
+    "CloudFront-Viewer-Country": "US",
+    "Content-Type": "application/json",
+    "Host": "5wfzggu2zi.execute-api.us-west-2.amazonaws.com",
+    "User-Agent": "Ruby",
+    "Via": "1.1 c4ff8a7ab32ae47f65347ecd5f30a4e6.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "T2ZMCZxMWfjnEYMfTY5eDZct_WvFX5v9KwhLWRjPisNjLfsPfSf8tg==",
+    "X-Forwarded-For": "52.23.171.145, 54.182.230.11",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "451967854914",
+    "resourceId": "vgk9i2",
+    "stage": "dev",
+    "requestId": "3427822c-f489-11e6-94b1-eb77044fc05b",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "apiKey": null,
+      "sourceIp": "52.23.171.145",
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Ruby",
+      "user": null
+    },
+    "resourcePath": "/receive",
+    "httpMethod": "POST",
+    "apiId": "5wfzggu2zi"
+  },
+  "body": '{\n\t"method" : "POST",\n\t"body" : {\n\t\t"value1" : "hola"\n\t},\t\n\t"url" : "https://mala5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination",\n\t"tries" : 4\n}',
+  "isBase64Encoded": false
+}
