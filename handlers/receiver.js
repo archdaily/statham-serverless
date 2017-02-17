@@ -1,13 +1,11 @@
 'use strict';
 
-var Message = require('modules/message');
-var utilities = require('modules/utilities');
-var cloudwatch = require('modules/cloudwatch');
-var validator = require('modules/validator');
+var Message = require('../modules/message');
+var utilities = require('../modules/utilities');
+var cloudwatch = require('../modules/cloudwatch');
+var validator = require('../modules/validator');
 
 module.exports.receiveAndSendMessage = (event, context, callback) => {
-  console.log(event);
-  console.log(context);
   validate_and_send(false, event, callback);
 }
 

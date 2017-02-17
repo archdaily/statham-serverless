@@ -3,9 +3,9 @@
 var https = require('https');
 var http = require('http');
 var url = require('url');
-var utilities = require('modules/utilities');
-var ses = require('modules/ses');
-var sqs = require('modules/sqs');
+var utilities = require('./utilities');
+var ses = require('./ses');
+var sqs = require('./sqs');
 var config = require('nconf').file('config.json');
 
 var triesNum = parseInt(config.get('TriesNum'));

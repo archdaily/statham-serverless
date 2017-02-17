@@ -5,6 +5,7 @@
   "main": "send.js",
   "dependencies": {
     "async": "^2.1.4",
+    "aws-sdk": "^2.15.0",
     "ejs": "^2.5.5",
     "jsonwebtoken": "^7.2.1",
     "moment": "^2.17.1",

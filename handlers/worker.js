@@ -1,6 +1,6 @@
 'use strict';
-var Message = require('modules/message');
-var sqs = require('modules/sqs');
+var Message = require('../modules/message');
+var sqs = require('../modules/sqs');
 var async = require('async');
 var cloudwatch = require('modules/cloudwatch');
 

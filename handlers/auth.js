@@ -1,6 +1,6 @@
 'use strict'
 
-var utilities = require('modules/utilities');
+var utilities = require('../modules/utilities');
 var config = require('nconf').file('credentials.json');
 
 var pass = config.get("passwordJWK");
