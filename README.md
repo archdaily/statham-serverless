@@ -1,3 +1,5 @@
+(https://s3-us-west-2.amazonaws.com/statham-img/bannerGitHub.png)
+
 # Statham Serverless
 
 Statham is an application made in Node.js over Lambda of AWS, this means that the application runs on the cloud of amazon so its cost is only the time and the memory that takes the execution of the code in real time.
