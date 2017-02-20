@@ -45,3 +45,5 @@ On a terminal into statham-serverless folder:
 * `serverless deploy` or `sls deploy`
 
 Now you will have three endpoints availables to make requests to Statham, more info [here](https://github.com/PNet/statham-serverless/wiki)
+
+->Created with &#x2665; in Chile, by Interns of ArchDaily.<-
