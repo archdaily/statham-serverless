@@ -1,3 +1,5 @@
 .serverless/
 credentials.json
 node_modules/
+.bash_history
+.npm
