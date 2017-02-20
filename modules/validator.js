@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken');
+var url = require('url');
 
 var credentials = require('nconf').file('credentials.json');
 var secretToken = credentials.get('secretToken');
@@ -60,8 +61,11 @@ var verifyToken = function(token) {
   }
 }
 
-var verifyURL = function(url) {
-  if (!url || url == '') return false;
+var verifyURL = function(url_msg) {
+  if (!url_msg || url_msg == '') return false;
+  var urlObj = url.parse(url_msg);
+  if (!(urlObj.protocol == 'http:' || urlObj.protocol == 'https:'))
+    return false;
   return true;
 }
 
