@@ -52,11 +52,11 @@ var make_html_response = function(message, callback) {
   });
 }
 
-module.exports.create_response = function(email, message, callback) {
-  if (email) {
+module.exports.create_response = function(status, isFromEmail, message, callback) {
+  if (isFromEmail) {
     make_html_response(message, callback);
   } else {
-    make_json_response(callback, 200, { "Status": message });
+    make_json_response(callback, status, { "Status": message });
   }
 }
 
