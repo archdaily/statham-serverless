@@ -5,6 +5,7 @@ var secretToken = credentials.get('secretToken');
 
 module.exports.validateParams = function(email, event) {
   var params = getParameters(email, event);
+  if (!params) return null;
   if (!verifyURL(params.url)) return null;
   if (!verifyBody(params.body)) return null;
   if (!verifyMethod(params.method)) return null;
