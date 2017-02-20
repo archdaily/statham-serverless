@@ -44,10 +44,16 @@ app.get('/getToken', function(req, res) {
   testEvent.resource = '/getToken';
   testEvent.sourceIp = "";
   auth.getToken(testEvent, null, function(err, response) {
-    res.statusCode = 200;
-    res.send({
-      token: JSON.parse(response.body).token
-    });
+    if (response.statusCode == 400) {
+      res.statusCode=400;
+      res.send("Error: invalid or missing password");
+    }
+    else{
+      res.statusCode = 200;
+      res.send({
+        token: JSON.parse(response.body).token
+      }); 
+    }
   });
 });
 
