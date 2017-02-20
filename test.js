@@ -61,12 +61,133 @@ describe('receiver', function() {
 });
 
 describe('receiver', function() {
+  describe('#receiveAndSendMessage() no auth', function() {
+    it("should throw error message", function(done) {
+      testEvent.body = JSON.stringify({
+        "method": 0,
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        },
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() wrong auth', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization = "token";
+      testEvent.body = JSON.stringify({
+        "method": "",
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        },
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
   describe('#receiveAndSendMessage() null method', function() {
     it("should throw error message", function(done) {
       testEvent.headers.Authorization =
         utilities.createToken('testing');
       testEvent.body = JSON.stringify({
         "method": "",
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        },
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() int on method', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": 0,
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        },
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() no method', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        },
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() wrong string method', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": "method",
         "body": {
           "value1": "valor1",
           "value2": 2,
