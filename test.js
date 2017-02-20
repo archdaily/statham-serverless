@@ -205,3 +205,65 @@ describe('receiver', function() {
     });
   })
 });
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() empty json body', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": "method",
+        "body": {},
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() empty string body', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": "method",
+        "body": "",
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() no body', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": "method",
+        "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
