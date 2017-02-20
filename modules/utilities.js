@@ -39,10 +39,10 @@ module.exports.add_extras = function(event, messageJSON) {
   return messageJSON;
 }
 
-var make_html_response = function(message, callback) {
+var make_html_response = function(statusCode, message, callback) {
   message_html(message, function(data) {
     var response = {
-      statusCode: 200,
+      statusCode: statusCode,
       headers: {
         "Content-Type": "text/html"
       },
@@ -52,11 +52,11 @@ var make_html_response = function(message, callback) {
   });
 }
 
-module.exports.create_response = function(status, isFromEmail, message, callback) {
+module.exports.create_response = function(statusCode, isFromEmail, message, callback) {
   if (isFromEmail) {
-    make_html_response(message, callback);
+    make_html_response(statusCode, message, callback);
   } else {
-    make_json_response(callback, status, { "Status": message });
+    make_json_response(callback, statusCode, { "Status": message });
   }
 }
 
