@@ -63,8 +63,9 @@ describe('receiver', function() {
 describe('receiver', function() {
   describe('#receiveAndSendMessage() no auth', function() {
     it("should throw error message", function(done) {
+      testEvent.headers.Authorization = null;
       testEvent.body = JSON.stringify({
-        "method": 0,
+        "method": "POST",
         "body": {
           "value1": "valor1",
           "value2": 2,
@@ -88,7 +89,7 @@ describe('receiver', function() {
     it("should throw error message", function(done) {
       testEvent.headers.Authorization = "token";
       testEvent.body = JSON.stringify({
-        "method": "",
+        "method": "POST",
         "body": {
           "value1": "valor1",
           "value2": 2,
@@ -212,7 +213,7 @@ describe('receiver', function() {
       testEvent.headers.Authorization =
         utilities.createToken('testing');
       testEvent.body = JSON.stringify({
-        "method": "method",
+        "method": "POST",
         "body": {},
         "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
       });
@@ -233,7 +234,7 @@ describe('receiver', function() {
       testEvent.headers.Authorization =
         utilities.createToken('testing');
       testEvent.body = JSON.stringify({
-        "method": "method",
+        "method": "POST",
         "body": "",
         "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
       });
@@ -254,8 +255,82 @@ describe('receiver', function() {
       testEvent.headers.Authorization =
         utilities.createToken('testing');
       testEvent.body = JSON.stringify({
-        "method": "method",
+        "method": "POST",
         "url": "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() empty string url', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": "POST",
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        },
+        "url": ""
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() no url', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": "POST",
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        }
+      });
+      receiver.receiveAndSendMessage(testEvent, null,
+        function(err, response) {
+          var body = JSON.parse(response.body);
+          console.log(body.Status);
+          if (response.statusCode == 400) done();
+          else done(body.Status);
+        });
+    });
+  })
+});
+
+describe('receiver', function() {
+  describe('#receiveAndSendMessage() wrong protocol url', function() {
+    it("should throw error message", function(done) {
+      testEvent.headers.Authorization =
+        utilities.createToken('testing');
+      testEvent.body = JSON.stringify({
+        "method": "POST",
+        "body": {
+          "value1": "valor1",
+          "value2": 2,
+          "value3": "value3"
+        },
+        "url": "httpsa://5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination"
       });
       receiver.receiveAndSendMessage(testEvent, null,
         function(err, response) {
