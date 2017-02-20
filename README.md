@@ -1,4 +1,4 @@
-(https://s3-us-west-2.amazonaws.com/statham-img/bannerGitHub.png)
+![Statham](https://s3-us-west-2.amazonaws.com/statham-img/bannerGitHub.png)
 
 # Statham Serverless
 
