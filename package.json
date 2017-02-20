@@ -13,8 +13,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node testserver.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node testserver.js"
   },
   "repository": {
     "type": "git",

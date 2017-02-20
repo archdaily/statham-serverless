@@ -14,8 +14,9 @@ ENV HOME=/home/app
 USER app
 WORKDIR $HOME
 
-COPY . /home/app
-
+COPY package.json /home/app
 RUN npm install
 
-CMD ["npm","start"]
+COPY . /home/app
+
+CMD ["npm","test"]
