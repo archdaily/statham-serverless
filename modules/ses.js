@@ -29,7 +29,7 @@ module.exports.mail_message_generator = function(message) {
         }
       }
     }, function(err, data) {
-      if (err) console.log(err);
+      if (err) console.log();
     });
   })
 }
@@ -37,7 +37,7 @@ module.exports.mail_message_generator = function(message) {
 var render_body_html = function(message, callback) {
   fs.readFile('views/email.html', 'utf8', function(err, data) {
     if (err) {
-      console.log(err);
+      console.log();
     }
     var data_message = ejs.render(data, {
       lambda: message.resource,

@@ -41,7 +41,7 @@ var deliver_message = function(isHTML, messageJSON, callback) {
       );
     } else {
       cloudwatch.enable_rule();
-      utilities.create_response(200,
+      utilities.create_response(202,
         isHTML,
         "The message couldn't be sent, therefore it was added to the queue",
         function(response) {
