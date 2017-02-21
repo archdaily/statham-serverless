@@ -65,7 +65,7 @@ describe('receiver', function() {
       receiver.receiveAndSendMessage(testEvent, null,
         function(err, response) {
           var body = JSON.parse(response.body);
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(body.Status);
         });
     });
@@ -83,7 +83,7 @@ describe('receiver', function() {
       receiver.receiveAndSendMessage(testEvent, null,
         function(err, response) {
           var body = JSON.parse(response.body);
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(body.Status);
         });
     });
@@ -310,7 +310,7 @@ describe('receiver', function() {
       };
       receiver.emailResend(testEvent, null,
         function(err, response) {
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(response.statusCode);
         });
     });
@@ -327,7 +327,7 @@ describe('receiver', function() {
       };
       receiver.emailResend(testEvent, null,
         function(err, response) {
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(response.statusCode);
         });
     });

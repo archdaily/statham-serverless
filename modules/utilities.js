@@ -20,6 +20,9 @@ module.exports.createToken = function(origin) {
 module.exports.make_json_response = function(callback, statusCode, body) {
   var response = {
     statusCode: statusCode,
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(body)
   };
   callback(response);
@@ -28,6 +31,7 @@ module.exports.make_json_response = function(callback, statusCode, body) {
 module.exports.add_extras = function(event, messageJSON) {
   var urlDest = url.parse(messageJSON.url);
   messageJSON.destination = urlDest.pathname;
+  if (!messageJSON.destination) messageJSON.destination = "undefined";
   messageJSON.origin = event.headers.Origin;
   if (!messageJSON.origin) messageJSON.origin = event.requestContext.identity.sourceIp;
   if (!messageJSON.origin) messageJSON.origin = 'undefined';

@@ -16,7 +16,8 @@
     "chai": "^3.5.0"
   },
   "scripts": {
-    "start": "node test-server.js"
+    "start": "node test-server.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",

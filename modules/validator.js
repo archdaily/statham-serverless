@@ -4,14 +4,22 @@ var url = require('url');
 var credentials = require('nconf').file('credentials.json');
 var secretToken = credentials.get('secretToken');
 
-module.exports.validateParams = function(email, event) {
+module.exports.getParams = function(email, event, callback) {
   var params = getParameters(email, event);
-  if (!params) return null;
-  if (!verifyURL(params.url)) return null;
-  if (!verifyBody(params.body)) return null;
-  if (!verifyMethod(params.method)) return null;
-  return params;
+  if (!params) callback(err("Bad auth.", 401));
+  else if (!verifyURL(params.url)) callback(err("Bad url.", 400));
+  else if (!verifyBody(params.body)) callback(err("Bad body.", 400));
+  else if (!verifyMethod(params.method)) callback(err("Bad method.", 400));
+  else callback(null, params);
 };
+
+var err = function(message, code) {
+  var err = {
+    message: message,
+    code: code
+  }
+  return err;
+}
 
 var getParameters = function(email, event) {
   var params;
