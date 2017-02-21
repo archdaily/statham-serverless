@@ -25,7 +25,6 @@ var add_attributes = function(messageJSON) {
   return messageJSON;
 }
 
-
 var validate_tries_message = function(messageJSON, callback) {
   if (!messageJSON.tries)
     messageJSON.tries = 0;
