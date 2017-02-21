@@ -9,9 +9,9 @@ var testEvent = require('../test-event');
 var utilities = require('../modules/utilities');
 var receiver = require('../handlers/receiver');
 
-var urlDest =
-  "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com" +
-  "/dev/testingDestination";
+var urlDest = "https://jsonplaceholder.typicode.com/posts";
+/*  "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com" +
+  "/dev/testingDestination";*/
 
 describe('receiver', function() {
   describe('#receiveAndSendMessage()', function() {
@@ -65,7 +65,7 @@ describe('receiver', function() {
       receiver.receiveAndSendMessage(testEvent, null,
         function(err, response) {
           var body = JSON.parse(response.body);
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(body.Status);
         });
     });
@@ -83,7 +83,7 @@ describe('receiver', function() {
       receiver.receiveAndSendMessage(testEvent, null,
         function(err, response) {
           var body = JSON.parse(response.body);
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(body.Status);
         });
     });
@@ -310,7 +310,7 @@ describe('receiver', function() {
       };
       receiver.emailResend(testEvent, null,
         function(err, response) {
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(response.statusCode);
         });
     });
@@ -327,7 +327,7 @@ describe('receiver', function() {
       };
       receiver.emailResend(testEvent, null,
         function(err, response) {
-          if (response.statusCode == 400) done();
+          if (response.statusCode == 401) done();
           else done(response.statusCode);
         });
     });
