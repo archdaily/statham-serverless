@@ -39,6 +39,9 @@ var getParameters = function(email, event) {
       "body": body.body
     }
   }
+  try{
+    params.body = JSON.parse(params.body);
+  } catch(err){}
   return params;
 }
 
