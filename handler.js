@@ -2,7 +2,7 @@
 /// JUST TO TEST STATHAM ///
 module.exports.tester = (event, context, callback) => {
   const response = {
-    statusCode: 200,
+    statusCode: 401,
     body: JSON.stringify({
       input: event.body
     })

@@ -29,19 +29,34 @@ var determinate_action_response = function(message, response, callback) {
     case 206:
     case 207:
     case 208:
-      callback(null, response);
+      callback(null, resp(
+        "The message was delivered successfully.",
+        response));
       break;
     case 401:
-      error_message_to_email(message, function(response) {
-        callback(null, response);
+      error_message_to_email(message, function(msg) {
+        callback(null, resp(
+          "The message couldn't be sent, details on email",
+          response));
       });
       break;
     case 400:
     default:
       error_message_to_trunk(message);
-      callback(response);
+      callback(
+        resp(
+          "The message couldn't be sent, therefore it was added to the queue",
+          response));
       break;
   }
+}
+
+var resp = function(message, response) {
+  var res = {
+    message: message,
+    response: response
+  }
+  return res;
 }
 
 var error_message_to_trunk = function(message) {

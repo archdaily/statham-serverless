@@ -33,7 +33,8 @@ module.exports.add_extras = function(event, messageJSON) {
   messageJSON.destination = urlDest.pathname;
   if (!messageJSON.destination) messageJSON.destination = "undefined";
   messageJSON.origin = event.headers.Origin;
-  if (!messageJSON.origin) messageJSON.origin = event.requestContext.identity.sourceIp;
+  if (!messageJSON.origin)
+    messageJSON.origin = event.requestContext.identity.sourceIp;
   if (!messageJSON.origin) messageJSON.origin = 'undefined';
   messageJSON.resource =
     event.headers["X-Forwarded-Proto"] +
@@ -56,13 +57,18 @@ var make_html_response = function(statusCode, message, callback) {
   });
 }
 
-module.exports.create_response = function(statusCode, isFromEmail, message, callback) {
-  if (isFromEmail) {
-    make_html_response(statusCode, message, callback);
-  } else {
-    make_json_response(callback, statusCode, { "Status": message });
+module.exports.create_response =
+  function(statusCode, isFromEmail, message, callback, response) {
+    if (isFromEmail) {
+      make_html_response(statusCode, message, callback);
+    } else {
+      if (response)
+        make_json_response(
+          callback, statusCode, { "Status": message, "Response": response });
+      else
+        make_json_response(callback, statusCode, { "Status": message });
+    }
   }
-}
 
 var make_json_response = function(callback, statusCode, body) {
   var response = {

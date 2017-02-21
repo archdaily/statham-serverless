@@ -32,24 +32,26 @@ var validate_and_send = function(isFromEmail, event, callback) {
 }
 
 var deliver_message = function(isHTML, messageJSON, callback) {
-  Message.send(messageJSON, function(err, res) {
+  Message.send(messageJSON, function(err, data) {
     if (err) {
       cloudwatch.enable_rule();
       utilities.create_response(
         202,
         isHTML,
-        "The message couldn't be sent, therefore it was added to the queue",
+        err.message,
         function(response) {
           callback(null, response);
-        }
+        },
+        err.response
       );
     } else {
       utilities.create_response(200,
         isHTML,
-        "The message was delivered successfully.",
+        data.message,
         function(response) {
           callback(null, response);
-        }
+        },
+        data.response
       );
     }
   });
