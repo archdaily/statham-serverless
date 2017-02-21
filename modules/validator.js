@@ -27,7 +27,7 @@ var getParameters = function(email, event) {
     if (!verifyTokenStringParameter(event)) return null;
     params = {
       "url": event.queryStringParameters.url,
-      "method": "POST",
+      "method": event.queryStringParameters.method,
       "body": event.queryStringParameters.body
     }
   } else {
