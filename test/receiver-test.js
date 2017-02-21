@@ -9,9 +9,9 @@ var testEvent = require('../test-event');
 var utilities = require('../modules/utilities');
 var receiver = require('../handlers/receiver');
 
-var urlDest = "https://jsonplaceholder.typicode.com/posts";
-/*  "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com" +
-  "/dev/testingDestination";*/
+var urlDest =
+  "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com" +
+  "/dev/testingDestination";
 
 describe('receiver', function() {
   describe('#receiveAndSendMessage()', function() {
