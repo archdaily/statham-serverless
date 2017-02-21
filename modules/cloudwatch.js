@@ -17,7 +17,7 @@ module.exports.enable_rule = function() {
     State: 'ENABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log(err, err.stack);
+    if (err) console.log();
   });
 }
 
@@ -28,7 +28,7 @@ module.exports.disable_rule = function() {
     State: 'DISABLED'
   };
   cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log(err, err.stack);
+    if (err) console.log();
   });
 }
 
@@ -39,7 +39,7 @@ var exist_rule = function(callback) {
   };
   cloudwatchevents.listRules(params, function(err, data) {
     if (err) {
-      console.log(err, err.stack);
+      console.log();
       callback(false);
     } else {
       if (data.Rules.length == 1) callback(true);
