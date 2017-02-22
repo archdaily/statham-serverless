@@ -79,7 +79,6 @@ That's going to run the migrations automatically.
 
 <p align="center">
   <br>
-  <br>
   <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b><br>
 </p>
 
