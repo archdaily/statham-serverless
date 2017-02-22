@@ -25,14 +25,14 @@ When it reaches that number of attempts, Statham will notify to a given email th
 
 ### Clone the repo then cd into that folder
 
-* ```git clone https://github.com/PNet/statham-serverless```
-* ```cd statham-serverless```
+	* ```git clone https://github.com/PNet/statham-serverless```
+	* ```cd statham-serverless```
 
 ### Download dependencies
 
 On statham-serverless folder open a terminal:
 
-* ```npm install```
+	* ```npm install```
 
 After that, npm should have created a folder named node_modules with all the libraries listed in the `packages.json` file.
 
@@ -49,11 +49,14 @@ Into the file 'config.json' you have to set the values:
 
 On a terminal into statham-serverless folder:
 
-* `serverless deploy` or `sls deploy`
+	* `serverless deploy` or `sls deploy`
 
 Now you will have three endpoints availables to make requests to Statham, more info [here](https://github.com/PNet/statham-serverless/wiki)
 
-#### Statham in Docker
+## Testing Statham on development
+
+Statham integrates the modules to be automatically raised in your virtual machine and so you can testify their functionality between your applications in the development environment you have, this functionality is done thanks to Docker so we make sure that regardless of the environment, the software is always executed in the same way.
+When installed locally, the SQS and SES service will not be working, but will not generate errors when Statham requires its services when retrying a message, so only the correct send service between applications will be available (/receiver endpoint).
 
 - Docker 1.12.2+
 - Docker Compose 1.8.1+
@@ -68,14 +71,10 @@ docker host.
 
 Run the project with:
 
-    $ docker-compose up --build -d
+    * `docker-compose up --build -d`
 
 That's going to run the migrations automatically.
 
-### Running docker
-
-* `docker-compose build`
-* `docker-compose up`
 
 <p align="center">
   <br>
