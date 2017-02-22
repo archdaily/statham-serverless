@@ -3,7 +3,8 @@
 [![node.js](https://img.shields.io/badge/Node.js-4.3-green.svg)](https://nodejs.org/es/download/)
 [![serverless](https://img.shields.io/badge/SERVERLESS-1.5.0-yellow.svg)](https://serverless.com/)
 [![aws](https://img.shields.io/badge/AWS-Services-orange.svg)](https://aws.amazon.com/es/)
-[![docker](https://img.shields.io/badge/Docker-testing-blue.svg)](https://github.com/PNet/statham-serverless/wiki#testing-statham-on-development)
+[![docker](https://img.shields.io/badge/Docker-testing-blue.svg)](https://github.com/PNet/statham-serverless/tree/develop#testing-statham-on-development)
+[![mocha](https://img.shields.io/badge/Mocha-testing-brown.svg)](hhttps://github.com/PNet/statham-serverless/wiki/Testing)
 
 
 # Statham Serverless
@@ -18,21 +19,21 @@ When it reaches that number of attempts, Statham will notify to a given email th
 - Account AWS
 - [Node.js](https://nodejs.org/en/)
 - [NPM](https://docs.npmjs.com/cli/install)
-- Serverless Framework ```npm install -g serverless```
+- Serverless Framework `npm install -g serverless`
 - Authorized email address
 
 ## Instalantion
 
 ### Clone the repo then cd into that folder
 
-	* ```git clone https://github.com/PNet/statham-serverless```
-	* ```cd statham-serverless```
+* `git clone https://github.com/PNet/statham-serverless`
+* `cd statham-serverless`
 
 ### Download dependencies
 
 On statham-serverless folder open a terminal:
 
-	* ```npm install```
+* ```npm install```
 
 After that, npm should have created a folder named node_modules with all the libraries listed in the `packages.json` file.
 
@@ -49,7 +50,7 @@ Into the file 'config.json' you have to set the values:
 
 On a terminal into statham-serverless folder:
 
-	* `serverless deploy` or `sls deploy`
+* `serverless deploy` or `sls deploy`
 
 Now you will have three endpoints availables to make requests to Statham, more info [here](https://github.com/PNet/statham-serverless/wiki)
 
@@ -71,7 +72,7 @@ docker host.
 
 Run the project with:
 
-    * `docker-compose up --build -d`
+* `docker-compose up --build -d`
 
 That's going to run the migrations automatically.
 
