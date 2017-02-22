@@ -4,7 +4,7 @@
 [![serverless](https://img.shields.io/badge/SERVERLESS-1.5.0-yellow.svg)](https://serverless.com/)
 [![aws](https://img.shields.io/badge/AWS-Services-orange.svg)](https://aws.amazon.com/es/)
 [![docker](https://img.shields.io/badge/Docker-1.12.2+-blue.svg)](https://github.com/PNet/statham-serverless/tree/develop#testing-statham-on-development)
-[![mocha](https://img.shields.io/badge/Mocha-testing-red.svg)](hhttps://github.com/PNet/statham-serverless/wiki/Testing)
+[![mocha](https://img.shields.io/badge/Mocha-testing-red.svg)](https://github.com/PNet/statham-serverless/wiki/Testing)
 
 
 # Statham Serverless
@@ -22,7 +22,7 @@ When it reaches that number of attempts, Statham will notify to a given email th
 - Serverless Framework `npm install -g serverless`
 - Authorized email address
 
-## Instalantion
+## Instalation
 
 ### Clone the repo then cd into that folder
 
