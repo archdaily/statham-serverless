@@ -4,6 +4,7 @@ var https = require('https');
 var http = require('http');
 var url = require('url');
 var utilities = require('./utilities');
+var validator = require('./validator');
 var ses = require('./ses');
 var sqs = require('./sqs');
 var config = require('nconf').file('config.json');
@@ -12,58 +13,116 @@ var triesNum = parseInt(config.get('TriesNum'));
 
 module.exports.send = function(message, callback) {
   validate_tries_message(message, function(response) {
-    if (response.statusCode == 200)
-      callback(true);
-    else
-      callback(false);
+    if (response.error) message.error = response.error;
+    determinate_action_response(message, response, callback);
   });
 }
 
-var add_attributes = function(messageJSON) {
-  var urlDest = url.parse(messageJSON.url);
-  messageJSON.destination = urlDest.pathname;
-  return messageJSON;
+var determinate_action_response = function(message, response, callback) {
+  switch (response.statusCode) {
+    case 200:
+    case 201:
+    case 202:
+    case 203:
+    case 204:
+    case 205:
+    case 206:
+    case 207:
+    case 208:
+      callback(null, resp(
+        "The request was processed successfully.",
+        response));
+      break;
+    case 401:
+    case 403:
+    case 405:
+    case 410:
+    case 411:
+    case 413:
+    case 414:
+    case 415:
+    case 418:
+    case 451:
+      error_message_to_email(message, function(msg) {
+        callback(null, resp(
+          "The request contains incorrect syntax or can't be processed.",
+          response));
+      });
+      break;
+    case 400:
+    default:
+      error_message_to_trunk(message);
+      callback(
+        resp(
+          "The request don't arrived, therefore it was added to the queue",
+          response));
+      break;
+  }
 }
 
+var resp = function(message, response) {
+  var res = {
+    message: message,
+    response: response
+  }
+  return res;
+}
 
-var validate_tries_message = function(messageJSON, callback) {
-  if (!messageJSON.tries)
-    messageJSON.tries = 0;
-  messageJSON.tries += 1;
+var error_message_to_trunk = function(message) {
+  sqs.send_msg_trunk(message);
+}
 
-  if (messageJSON.tries > triesNum)
-    error_message_to_email(messageJSON, function(response) {
+var validate_tries_message = function(message, callback) {
+  if (!message.tries)
+    message.tries = 0;
+  message.tries += 1;
+
+  if (message.tries > triesNum)
+    error_message_to_email(message, function(response) {
       callback(response);
     });
   else
-    send_message(messageJSON, function(response) {
+    send_message(message, function(response) {
       callback(response);
     });
 }
 
-var error_message_to_email = function(messageJSON, callback) {
-  ses.mail_message_generator(messageJSON);
+var error_message_to_email = function(message, callback) {
+  ses.mail_message_generator(message);
   utilities.make_json_response(callback, 200, {
     "response": "email sended"
   });
 }
 
-var get_string_body = function(messageJSON) {
-  return JSON.stringify(messageJSON.body);
+var send_message = function(message, callback) {
+  var postData = get_string_body(message);
+  var options = serialize_options(message, postData.length);
+  var protocol = url.parse(message.url).protocol;
+  if (protocol == 'https:') {
+    make_https_request(options, postData, function(response) {
+      callback(response);
+    });
+  } else if (protocol == 'http:') {
+    make_http_request(options, postData, function(response) {
+      callback(response);
+    });
+  }
 }
 
-var serialize_options = function(messageJSON) {
-  var postData = get_string_body(messageJSON);
-  var urlDest = url.parse(messageJSON.url);
-  messageJSON.destination = urlDest.pathname;
+var get_string_body = function(message) {
+  return JSON.stringify(message.body);
+}
+
+var serialize_options = function(message, data_length) {
+  var urlDest = url.parse(message.url);
   var options = {
     hostname: urlDest.host,
     port: urlDest.port,
     path: urlDest.pathname,
-    method: messageJSON.method,
+    method: message.method,
     headers: {
       'Content-Type': 'application/json',
-      'Content-Length': postData.length
+      'Content-Length': data_length
     }
   };
   return options;
@@ -71,73 +130,38 @@ var serialize_options = function(messageJSON) {
 
 var make_https_request = function(options, data, callback) {
   var req = https.request(options, (res) => {
-    var dataResponse = "";
-    res.setEncoding('utf8');
-    res.on('data', (chunk) => {
-      dataResponse += chunk;
-    });
-    res.on('end', () => {
-      utilities.make_json_response(callback, 200, {
-        "success": JSON.parse(dataResponse)
-      });
-    });
+    working_data(res, callback);
   });
-  req.on('error', (e) => {
-    utilities.make_json_response(callback, 400, {
-      "error": e.message
-    });
-  });
-  req.write(data);
-  req.end();
+  req_error(req, callback);
+  write_data(req, data);
 }
 
 var make_http_request = function(options, data, callback) {
   var req = http.request(options, (res) => {
-    var dataResponse = "";
-    res.setEncoding('utf8');
-    res.on('data', (chunk) => {
-      dataResponse += chunk;
-    });
-    res.on('end', () => {
-      var response = utilities.make_json_response(callback, 200, {
-        "success": dataResponse
-      });
-    });
+    working_data(res, callback);
   });
-  req.on('error', (e) => {
-    var response = utilities.make_json_response(callback, 400, {
-      "error": e.message
-    });
-  });
-  req.write(data);
-  req.end();
+  req_error(req, callback);
+  write_data(req, data);
 }
 
-var send_message = function(messageJSON, callback) {
-  var postData = get_string_body(messageJSON);
-  var options = serialize_options(messageJSON);
+var working_data = function(res, callback) {
+  var dataResponse = "";
+  res.setEncoding('utf8');
+  res.on('data', (chunk) => {
+    dataResponse += chunk;
+  });
+  res.on('end', () => {
+    callback({ success: JSON.parse(dataResponse), statusCode: res.statusCode });
+  });
+}
 
-  var protocol = url.parse(messageJSON.url).protocol;
-  if (protocol == 'https:') {
-    make_https_request(options, postData, function(response) {
-      var body = JSON.parse(response.body);
-      if (body.error) {
-        messageJSON.error = body.error;
-        sqs.send_msg_trunk(messageJSON);
-        callback(response);
-      } else
-        callback(response);
-    });
-  }
-  if (protocol == 'http:') {
-    make_http_request(options, postData, function(response) {
-      var body = JSON.parse(response.body);
-      if (body.error) {
-        messageJSON.error = body.error;
-        sqs.send_msg_trunk(messageJSON);
-        callback(response);
-      } else
-        callback(response);
-    });
-  }
+var req_error = function(req, callback) {
+  req.on('error', (e) => {
+    callback({ error: e.message, statusCode: 400 });
+  });
+}
+
+var write_data = function(req, data) {
+  req.write(data);
+  req.end();
 }

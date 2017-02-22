@@ -20,6 +20,9 @@ module.exports.createToken = function(origin) {
 module.exports.make_json_response = function(callback, statusCode, body) {
   var response = {
     statusCode: statusCode,
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(body)
   };
   callback(response);
@@ -28,8 +31,10 @@ module.exports.make_json_response = function(callback, statusCode, body) {
 module.exports.add_extras = function(event, messageJSON) {
   var urlDest = url.parse(messageJSON.url);
   messageJSON.destination = urlDest.pathname;
+  if (!messageJSON.destination) messageJSON.destination = "undefined";
   messageJSON.origin = event.headers.Origin;
-  if (!messageJSON.origin) messageJSON.origin = event.requestContext.identity.sourceIp;
+  if (!messageJSON.origin)
+    messageJSON.origin = event.requestContext.identity.sourceIp;
   if (!messageJSON.origin) messageJSON.origin = 'undefined';
   messageJSON.resource =
     event.headers["X-Forwarded-Proto"] +
@@ -39,10 +44,10 @@ module.exports.add_extras = function(event, messageJSON) {
   return messageJSON;
 }
 
-var make_html_response = function(message, callback) {
+var make_html_response = function(statusCode, message, callback) {
   message_html(message, function(data) {
     var response = {
-      statusCode: 200,
+      statusCode: statusCode,
       headers: {
         "Content-Type": "text/html"
       },
@@ -52,13 +57,18 @@ var make_html_response = function(message, callback) {
   });
 }
 
-module.exports.create_response = function(status, isFromEmail, message, callback) {
-  if (isFromEmail) {
-    make_html_response(message, callback);
-  } else {
-    make_json_response(callback, status, { "Status": message });
+module.exports.create_response =
+  function(statusCode, isFromEmail, message, callback, response) {
+    if (isFromEmail) {
+      make_html_response(statusCode, message, callback);
+    } else {
+      if (response)
+        make_json_response(
+          callback, statusCode, { "Status": message, "Response": response });
+      else
+        make_json_response(callback, statusCode, { "Status": message });
+    }
   }
-}
 
 var make_json_response = function(callback, statusCode, body) {
   var response = {
@@ -103,7 +113,7 @@ var number_chars = function() {
 var message_html = function(message, callback) {
   fs.readFile('views/resend.html', 'utf8', function(err, data) {
     if (err) {
-      console.log(err);
+      console.log();
     }
     var data_message = ejs.render(data, {
       message: message

@@ -1,11 +1,10 @@
 module.exports = {
-  "resource": "/receive",
-  "path": "/receive",
-  "httpMethod": "POST",
+  "resource": "",
+  "path": "",
+  "httpMethod": "",
   "headers": {
     "Accept": "*/*",
     "Accept-Encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-    "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpcCI6IjUyLjIzLjE3MS4xNDUiLCJpYXQiOjE0ODcyNzgwODAsImV4cCI6MTQ4ODQ4NzY4MH0.OLRBlT9dWHHA931eaJw3uhIcX0AQAGNgMajC6U4cFW8",
     "CloudFront-Forwarded-Proto": "https",
     "CloudFront-Is-Desktop-Viewer": "true",
     "CloudFront-Is-Mobile-Viewer": "false",
@@ -13,8 +12,8 @@ module.exports = {
     "CloudFront-Is-Tablet-Viewer": "false",
     "CloudFront-Viewer-Country": "US",
     "Content-Type": "application/json",
-    "Host": "5wfzggu2zi.execute-api.us-west-2.amazonaws.com",
-    "User-Agent": "Ruby",
+    "Host": "",
+    "User-Agent": "",
     "Via": "1.1 c4ff8a7ab32ae47f65347ecd5f30a4e6.cloudfront.net (CloudFront)",
     "X-Amz-Cf-Id": "T2ZMCZxMWfjnEYMfTY5eDZct_WvFX5v9KwhLWRjPisNjLfsPfSf8tg==",
     "X-Forwarded-For": "52.23.171.145, 54.182.230.11",
@@ -35,18 +34,18 @@ module.exports = {
       "cognitoIdentityId": null,
       "caller": null,
       "apiKey": null,
-      "sourceIp": "52.23.171.145",
+      "sourceIp": "",
       "accessKey": null,
       "cognitoAuthenticationType": null,
       "cognitoAuthenticationProvider": null,
       "userArn": null,
-      "userAgent": "Ruby",
+      "userAgent": "",
       "user": null
     },
     "resourcePath": "/receive",
     "httpMethod": "POST",
     "apiId": "5wfzggu2zi"
   },
-  "body": '{\n\t"method" : "POST",\n\t"body" : {\n\t\t"value1" : "hola"\n\t},\t\n\t"url" : "https://mala5wfzggu2zi.execute-api.us-west-2.amazonaws.com/dev/testingDestination",\n\t"tries" : 4\n}',
+  "body": "",
   "isBase64Encoded": false
 }

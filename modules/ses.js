@@ -10,8 +10,8 @@ AWS.config.loadFromPath('./credentials.json');
 
 var ses = new AWS.SES();
 
-var to = [config.get('EmailNotification')];
-var from = config.get('EmailNotification');
+var to = [config.get('ToEmailNotification')];
+var from = config.get('FromEmailNotification');
 
 module.exports.mail_message_generator = function(message) {
   render_body_html(message, function(data) {
@@ -29,7 +29,7 @@ module.exports.mail_message_generator = function(message) {
         }
       }
     }, function(err, data) {
-      if (err) console.log(err);
+      if (err) console.log();
     });
   })
 }
@@ -37,7 +37,7 @@ module.exports.mail_message_generator = function(message) {
 var render_body_html = function(message, callback) {
   fs.readFile('views/email.html', 'utf8', function(err, data) {
     if (err) {
-      console.log(err);
+      console.log();
     }
     var data_message = ejs.render(data, {
       lambda: message.resource,

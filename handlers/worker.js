@@ -12,11 +12,16 @@ module.exports.workFromTrunk = (event, context, callback) => {
 
 var process_list_concurrently = function(listMsg) {
   async.every(listMsg.Messages, function(message, next) {
-    Message.send(message.Message, function(sent) {
-      next(null, sent);
+    Message.send(message.Message, function(err, response) {
+      if (err) {
+        next(null, false);
+      } else {
+        next(null, true);
+      }
     });
   }, function(sent, result) {
-    if (result) cloudwatch.disable_rule();
-    else cloudwatch.enable_rule();
+    if (result) {
+      cloudwatch.disable_rule();
+    }
   });
 }

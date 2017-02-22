@@ -14,39 +14,44 @@ module.exports.emailResend = (event, context, callback) => {
 }
 
 var validate_and_send = function(isFromEmail, event, callback) {
-  var messageJSON = validator.validateParams(isFromEmail, event);
-  if (messageJSON) {
-    messageJSON = utilities.add_extras(event, messageJSON);
-    deliver_message(isFromEmail, messageJSON, callback);
-  } else {
-    utilities.create_response(400,
-      isFromEmail,
-      "There is an error with the request. Please verify.",
-      function(response) {
-        callback(null, response);
-      }
-    );
-  }
-}
-
-var deliver_message = function(isHTML, messageJSON, callback) {
-  Message.send(messageJSON, function(sent) {
-    if (sent) {
-      utilities.create_response(200,
-        isHTML,
-        "The message was delivered successfully.",
+  validator.getParams(isFromEmail, event, function(err, message) {
+    if (err) {
+      utilities.create_response(
+        err.code,
+        isFromEmail,
+        "There is an error with the request: " + err.message,
         function(response) {
           callback(null, response);
         }
       );
     } else {
+      message = utilities.add_extras(event, message);
+      deliver_message(isFromEmail, message, callback);
+    }
+  });
+}
+
+var deliver_message = function(isHTML, messageJSON, callback) {
+  Message.send(messageJSON, function(err, data) {
+    if (err) {
       cloudwatch.enable_rule();
-      utilities.create_response(200,
+      utilities.create_response(
+        202,
         isHTML,
-        "The message couldn't be sent, therefore it was added to the queue",
+        err.message,
         function(response) {
           callback(null, response);
-        }
+        },
+        err.response
+      );
+    } else {
+      utilities.create_response(200,
+        isHTML,
+        data.message,
+        function(response) {
+          callback(null, response);
+        },
+        data.response
       );
     }
   });

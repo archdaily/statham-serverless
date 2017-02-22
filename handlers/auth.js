@@ -17,7 +17,7 @@ module.exports.getToken = (event, context, callback) => {
     utilities.make_json_response(function(response) {
         callback(null, response);
       },
-      400, {
+      401, {
         "Error": "Invalid or Missing Authorization"
       });
   }
