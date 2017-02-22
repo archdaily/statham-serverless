@@ -19,6 +19,7 @@ When it reaches that number of attempts, Statham will notify to a given email th
 - [Node.js](https://nodejs.org/en/)
 - [NPM](https://docs.npmjs.com/cli/install)
 - Serverless Framework ```npm install -g serverless```
+- Authorized email address
 
 ## Instalantion
 
@@ -52,10 +53,33 @@ On a terminal into statham-serverless folder:
 
 Now you will have three endpoints availables to make requests to Statham, more info [here](https://github.com/PNet/statham-serverless/wiki)
 
+#### Statham in Docker
+
+- Docker 1.12.2+
+- Docker Compose 1.8.1+
+
+#### Proxy
+
+You need to run an instance of [nginx-proxy](https://github.com/PNet/nginx-proxy).
+Then add `statham.dev.archdaily.com` to your `/etc/hosts` file pointing to your
+docker host.
+
+### Installation
+
+Run the project with:
+
+    $ docker-compose up --build -d
+
+That's going to run the migrations automatically.
+
+### Running docker
+
+* `docker-compose build`
+* `docker-compose up`
+
 <p align="center">
   <br>
   <br>
   <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b><br>
 </p>
-
 
