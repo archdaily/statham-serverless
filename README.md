@@ -22,7 +22,7 @@ When it reaches that number of attempts, Statham will notify to a given email th
 - Serverless Framework `npm install -g serverless`
 - Authorized email address
 
-## Instalantion
+## Instalation
 
 ### Clone the repo then cd into that folder
 
