@@ -30,13 +30,22 @@ var determinate_action_response = function(message, response, callback) {
     case 207:
     case 208:
       callback(null, resp(
-        "The message was delivered successfully.",
+        "The request was processed successfully.",
         response));
       break;
     case 401:
+    case 403:
+    case 405:
+    case 410:
+    case 411:
+    case 413:
+    case 414:
+    case 415:
+    case 418:
+    case 451:
       error_message_to_email(message, function(msg) {
         callback(null, resp(
-          "The message couldn't be sent, details on email",
+          "The request contains incorrect syntax or can't be processed.",
           response));
       });
       break;
@@ -45,7 +54,7 @@ var determinate_action_response = function(message, response, callback) {
       error_message_to_trunk(message);
       callback(
         resp(
-          "The message couldn't be sent, therefore it was added to the queue",
+          "The request don't arrived, therefore it was added to the queue",
           response));
       break;
   }

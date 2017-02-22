@@ -11,7 +11,7 @@
 
 Statham is an application made in Node.js over Lambda of AWS, this means that the application runs on the cloud of amazon so its cost is only the time and the memory that takes the execution of the code in real time.
 
-Statham acts as a sender of HTTP POST requests, with an algorithm that **tries** a determinated amount of attempts to send a message.  
+Statham acts as a sender of HTTP POST requests, with an algorithm that **tries** a determinated amount of attempts to send a message. 
 When it reaches that number of attempts, Statham will notify to a given email the failure.
 
 ## Requirement
@@ -44,9 +44,21 @@ Set your AWS credentials and secret token on the file 'credentials.json.sample' 
 Into the file 'config.json' you have to set the values:
 * CycleExpression: The expresion that defines how much time will wait Statham to do another attempt. For more info about scheduler expressions visit [here](http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html).
 * TriesNum: Number of times that Statham tries to send a message before sending a repórt to the email into *EmailNotification* parameter.
-* EmailNotification: A e-mail direction to send the report when statham reached the max number of attempts (*TriesNum*).
+* EmailNotification: A Email direction to send the report when statham reached the max number of attempts (*TriesNum*). This Email have to be configured in SES.
 
-### Deploying
+### Config Email in SES
+
+In order to use the SES service of amazon it is necessary to authenticate an e-mail address, this means to integrate the SNS and DKIM for the correct functioning of the messaging.
+
+This step can not be performed using statham deploy, so it is required to perform manually.
+
+[Configurate Email SES](https://us-west-2.console.aws.amazon.com/ses/home?region=us-west-2#verified-senders-email:)
+
+[Help with the configuration of SNS](http://docs.aws.amazon.com/ses/latest/DeveloperGuide/configure-sns-notifications.html#configure-feedback-notifications-console)
+
+[Help with the configuration of DKIM](http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html)
+
+## Deploying
 
 On a terminal into statham-serverless folder:
 
