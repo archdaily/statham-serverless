@@ -9,20 +9,19 @@
 
 # Statham Serverless
 
-Statham is an application made in Node.js over Lambda of AWS, this means that the application runs on the cloud of amazon so its cost is only the time and the memory that takes the execution of the code in real time.
+Statham is an application made in Node.js over AWS Lambda. This means that the application runs on the cloud of Amazon, so the costs are only the time and memory that takes the execution of the code in real time.
 
-Statham acts as a sender of HTTP POST requests, with an algorithm that **tries** a determinated amount of attempts to send a message. 
-When it reaches that number of attempts, Statham will notify to a given email the failure.
+Statham acts as a middleware between HTTP POST requests/responses, with an algorithm that **tries** a specified amount of attempts to send a particular message. If the message can't be delivered after all the attemps, Statham will notify the failure to a given email.
 
 ## Requirement
 
-- Account AWS
+- An AWS account.
 - [Node.js](https://nodejs.org/en/)
 - [NPM](https://docs.npmjs.com/cli/install)
-- Serverless Framework `npm install -g serverless`
-- Authorized email address
+- Serverless Framework: `npm install -g serverless`
+- An authorized email address
 
-## Instalation
+## Installation
 
 ### Clone the repo then cd into that folder
 
@@ -41,14 +40,14 @@ After that, npm should have created a folder named node_modules with all the lib
 
 Set your AWS credentials and secret token on the file 'credentials.json.sample' and rename it to 'credentials.json'.
 
-Into the file 'config.json' you have to set the values:
-* CycleExpression: The expresion that defines how much time will wait Statham to do another attempt. For more info about scheduler expressions visit [here](http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html).
-* TriesNum: Number of times that Statham tries to send a message before sending a repórt to the email into *EmailNotification* parameter.
-* EmailNotification: A Email direction to send the report when statham reached the max number of attempts (*TriesNum*). This Email have to be configured in SES.
+In the file 'config.json' you have to set the values:
+* CycleExpression: The expresion that defines how much time will Statham wait to do another attempt. For more info about scheduler expressions visit [here](http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html).
+* TriesNum: Number of times that Statham tries to send a message before sending a report to the email specified in the *EmailNotification* parameter.
+* EmailNotification: An email address to send the report when statham reached the max number of attempts (*TriesNum*). This email has to be configured in SES.
 
 ### Config Email in SES
 
-In order to use the SES service of amazon it is necessary to authenticate an e-mail address, this means to integrate the SNS and DKIM for the correct functioning of the messaging.
+In order to use the SES service of Amazon it is necessary to authenticate an e-mail address. For this, you need to integrate the SNS and DKIM for the correct functioning of the messaging.
 
 This step can not be performed using statham deploy, so it is required to perform manually.
 
@@ -68,8 +67,10 @@ Now you will have three endpoints availables to make requests to Statham, more i
 
 ## Testing Statham on development
 
-Statham integrates the modules to be automatically raised in your virtual machine and so you can testify their functionality between your applications in the development environment you have, this functionality is done thanks to Docker so we make sure that regardless of the environment, the software is always executed in the same way.
-When installed locally, the SQS and SES service will not be working, but will not generate errors when Statham requires its services when retrying a message, so only the correct send service between applications will be available (/receiver endpoint).
+Statham integrates all the necessary modules to work in an automatic fashion into a virtualized environment, so you can test their functionality between your applications in a development environment. This functionality is done thanks to Docker, so We make sure that regardless of the environment, the software is always executed in the same way.
+When installed locally, the SQS and SES service will not be working. This will not generate any errors but the "tries" functionality will not work.
+
+Dependencies in development mode:
 
 - Docker 1.12.2+
 - Docker Compose 1.8.1+
@@ -82,12 +83,11 @@ docker host.
 
 ### Installation
 
-Run the project with:
+- Run the project with:
 
 * `docker-compose up --build -d`
 
-That's going to run the migrations automatically.
-
+For more details on how to send/receive messages see the [wiki](https://github.com/PNet/statham-serverless/wiki).
 
 <p align="center">
   <br>
