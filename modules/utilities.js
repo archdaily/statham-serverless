@@ -8,7 +8,18 @@ var moment = require('moment');
 var credentials = require('nconf').file('credentials.json');
 var secretToken = credentials.get('secretToken');
 
-module.exports.createToken = function(origin) {
+module.exports.get_number_of_threads = function(num) {
+  var res = Math.floor(num / 10 + 1);
+  if (num % 10 == 0) res -= 1;
+  return res;
+}
+
+module.exports.get_array_of_numbers = function(N) {
+  var arr = Array.apply(null, { length: N }).map(Number.call, Number);
+  return arr;
+}
+
+module.exports.create_token = function(origin) {
   var payload = {
     ip: origin,
     iat: moment().unix(),

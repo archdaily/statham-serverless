@@ -46,7 +46,7 @@ var render_body_html = function(message, callback) {
       origin: message.origin,
       url: message.url,
       error: message.error,
-      token: utilities.createToken("email"),
+      token: utilities.create_token("email"),
       body: JSON.stringify(message.body)
     });
     callback(data_message);

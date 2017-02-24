@@ -9,36 +9,11 @@ AWS.config.loadFromPath('./credentials.json');
 
 var sqs = new AWS.SQS();
 
-var messagesJSON = {
-  'Messages': []
-};
-
-module.exports.get_list_trunk = function(callback) {
-  messagesJSON.Messages = [];
-  async.forever(
-    function(next) {
-      get_message_trunk_async(function(err, response) {
-        if (err) next(err);
-        else {
-          next();
-        }
-      });
-    },
-    function(err) {
-      callback(messagesJSON);
-    }
-  );
-}
-
-module.exports.delete_msg_trunk = function(ReceiptHandle) {
-  delete_msg_trunk_internal(ReceiptHandle);
-}
-
 module.exports.send_msg_trunk = function(message) {
   create_get_trunk_url(function(TrunkURL) {
     var params = disarm_message(message, TrunkURL);
     sqs.sendMessage(params, function(err, data) {
-      if (err) console.log()
+      if (err) console.log();
     });
   });
 }
@@ -56,9 +31,13 @@ var delete_msg_trunk_internal = function(ReceiptHandle) {
       ReceiptHandle: ReceiptHandle
     };
     sqs.deleteMessage(params, function(err, data) {
-      if (err) console.log()
+      if (err) console.log();
     });
   });
+}
+
+module.exports.get_messages_trunk = function(callback) {
+  get_message_trunk_async(callback);
 }
 
 var get_message_trunk_async = function(callback) {
@@ -71,12 +50,12 @@ var get_message_trunk_async = function(callback) {
           var messages = [];
           for (var i = 0; i < data.Messages.length; i++) {
             var message_statham = recontitution_message(data, i);
-            messagesJSON['Messages'].push(message_statham);
-            delete_msg_trunk_internal(data.Messages[i].ReceiptHandle);
+            messages.push(message_statham);
+            delete_msg_trunk_internal(message_statham.ReceiptHandle);
           }
           callback(null, messages);
         } else {
-          callback("SQS empty");
+          callback("undefinded");
         }
       }
     });
@@ -165,7 +144,7 @@ var create_get_trunk_url = function(callback) {
   var params = {
     QueueName: 'StathamTrunk.fifo',
     Attributes: {
-      ReceiveMessageWaitTimeSeconds: "1",
+      ReceiveMessageWaitTimeSeconds: "0",
       FifoQueue: "true",
       ContentBasedDeduplication: "true"
     }

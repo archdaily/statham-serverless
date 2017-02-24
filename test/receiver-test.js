@@ -16,7 +16,7 @@ var urlDest =
 describe('receiver', function() {
   describe('#receiveAndSendMessage()', function() {
     it("should send without error", function(done) {
-      testEvent.headers.Authorization = utilities.createToken('testing');
+      testEvent.headers.Authorization = utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "body": {
@@ -34,7 +34,7 @@ describe('receiver', function() {
         });
     });
     it("should send message to the queue", function(done) {
-      testEvent.headers.Authorization = utilities.createToken('testing');
+      testEvent.headers.Authorization = utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "body": {
@@ -89,7 +89,7 @@ describe('receiver', function() {
     });
     it("int on method: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": 0,
         "body": {
@@ -108,7 +108,7 @@ describe('receiver', function() {
     });
     it("empty method: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "",
         "body": {
@@ -127,7 +127,7 @@ describe('receiver', function() {
     });
     it("no method: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "body": {
           "value1": "valor1",
@@ -145,7 +145,7 @@ describe('receiver', function() {
     });
     it("wrong string method: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "method",
         "body": {
@@ -164,7 +164,7 @@ describe('receiver', function() {
     });
     it("empty json body: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "body": {},
@@ -179,7 +179,7 @@ describe('receiver', function() {
     });
     it("empty string body: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "body": "",
@@ -194,7 +194,7 @@ describe('receiver', function() {
     });
     it("no body: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "url": urlDest
@@ -208,7 +208,7 @@ describe('receiver', function() {
     });
     it("empty string url: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "body": {
@@ -227,7 +227,7 @@ describe('receiver', function() {
     });
     it("no url: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "body": {
@@ -245,7 +245,7 @@ describe('receiver', function() {
     });
     it("wrong protocol url: should throw error message", function(done) {
       testEvent.headers.Authorization =
-        utilities.createToken('testing');
+        utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
         "body": {
@@ -266,7 +266,7 @@ describe('receiver', function() {
   describe('#emailResend()', function() {
     it("should send without error", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "body": {
           "value1": "valor1",
@@ -283,7 +283,7 @@ describe('receiver', function() {
     });
     it("should send message to the queue", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "body": {
           "value1": "valor1",
@@ -333,7 +333,7 @@ describe('receiver', function() {
     });
     it("null method: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "",
         "body": {
           "value1": "valor1",
@@ -350,7 +350,7 @@ describe('receiver', function() {
     });
     it("int on method should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": 0,
         "body": {
           "value1": "valor1",
@@ -367,7 +367,7 @@ describe('receiver', function() {
     });
     it("no method: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "body": {
           "value1": "valor1",
           "value2": 2,
@@ -383,7 +383,7 @@ describe('receiver', function() {
     });
     it("wrong string method: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "method",
         "body": {
           "value1": "valor1",
@@ -400,7 +400,7 @@ describe('receiver', function() {
     });
     it("empty json body: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "body": {},
         "url": urlDest
@@ -413,7 +413,7 @@ describe('receiver', function() {
     });
     it("empty string body: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "body": "",
         "url": urlDest
@@ -426,7 +426,7 @@ describe('receiver', function() {
     });
     it("no body: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "url": urlDest
       };
@@ -438,7 +438,7 @@ describe('receiver', function() {
     });
     it("empty string url: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "body": {
           "value1": "valor1",
@@ -455,7 +455,7 @@ describe('receiver', function() {
     });
     it("no url: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "body": {
           "value1": "valor1",
@@ -471,7 +471,7 @@ describe('receiver', function() {
     });
     it("wrong protocol url: should throw error message", function(done) {
       testEvent.queryStringParameters = {
-        "token": utilities.createToken('testing'),
+        "token": utilities.create_token('testing'),
         "method": "POST",
         "body": {
           "value1": "valor1",
