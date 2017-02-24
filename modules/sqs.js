@@ -13,7 +13,7 @@ module.exports.send_msg_trunk = function(message) {
   create_get_trunk_url(function(TrunkURL) {
     var params = disarm_message(message, TrunkURL);
     sqs.sendMessage(params, function(err, data) {
-      if (err) console.log();
+      if (err) console.log(err);
     });
   });
 }
@@ -31,7 +31,7 @@ var delete_msg_trunk_internal = function(ReceiptHandle) {
       ReceiptHandle: ReceiptHandle
     };
     sqs.deleteMessage(params, function(err, data) {
-      if (err) console.log();
+      if (err) console.log(err);
     });
   });
 }
@@ -44,7 +44,7 @@ var get_message_trunk_async = function(callback) {
   create_get_trunk_url(function(TrunkURL) {
     var params = receiveMessage_settings(TrunkURL);
     sqs.receiveMessage(params, function(err, data) {
-      if (err) console.log()
+      if (err) console.log(err)
       else {
         if (data.Messages) {
           var messages = [];
@@ -150,7 +150,7 @@ var create_get_trunk_url = function(callback) {
     }
   };
   sqs.createQueue(params, function(err, data) {
-    if (err) console.log()
+    if (err) console.log(err)
     else {
       callback(data.QueueUrl);
     }
@@ -166,7 +166,7 @@ var get_count_trunk_async = function(callback) {
       QueueUrl: TrunkURL
     };
     sqs.getQueueAttributes(params, function(err, data) {
-      if (err) console.log()
+      if (err) console.log(err)
       else {
         var number = data.Attributes.ApproximateNumberOfMessages;
         callback(number);
