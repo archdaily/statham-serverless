@@ -213,12 +213,12 @@
                                 <form action="<%= lambda %>"
                                       method="GET" id="form">
                                     <input type="submit" value="Resend" style="color:#ffffff; background-color: #262626; background: #262626; border: 3px solid #262626; font-family: sans-serif; font-size: 13px; text-align: center; display: block; border-radius: 4px; font-weight: bold;">
-                                    <br>
+                                    <b><p>Destination address:</p></b>
                                     <input type="text" name="url" value="<%= url %>" style="width: 100%;">
-                                    <br>
                                     <br>
                                     <input type="hidden" name="token" value="<%= token %>">
                                     <input type="hidden" name="method" value="<%= method %>">
+                                    <b><p>Message:</p></b>
                                     <textarea readonly="readonly" name="body" form="form" rows="15" style="width: 100%;"><%= body %></textarea>
                                 </form>
                                 <br>
