@@ -91,7 +91,7 @@ That's going to run the migrations automatically.
 
 <p align="center">
   <br>
-  <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b>
+  <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b><br>
   <img src="https://s3-us-west-2.amazonaws.com/statham.adsttc.com/logo-co.png">
 </p>
 
