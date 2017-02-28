@@ -93,6 +93,6 @@ That's going to run the migrations automatically.
   <br>
   <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b>
   <br><br>
-  <img src="https://s3-us-west-2.amazonaws.com/statham.adsttc.com/logo-ad.png" style="width: 100%; max-width: 100px; height: auto;">
+  <img src="https://statham.adsttc.com/logo-ad.png" style="width: 100%; max-width: 100px; height: auto;">
 </p>
 
