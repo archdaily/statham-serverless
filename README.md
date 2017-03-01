@@ -1,4 +1,4 @@
-![Statham](https://s3-us-west-2.amazonaws.com/statham-img/bannerGitHub.png)
+![Statham](https://statham.adsttc.com/bannerGitHubPublic1.png)
 
 [![node.js](https://img.shields.io/badge/Node.js-4.3-green.svg)](https://nodejs.org/es/download/)
 [![serverless](https://img.shields.io/badge/SERVERLESS-1.5.0-yellow.svg)](https://serverless.com/)
