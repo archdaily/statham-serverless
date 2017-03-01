@@ -1,4 +1,4 @@
-![Statham](https://s3-us-west-2.amazonaws.com/statham-img/bannerGitHub.png)
+![Statham](https://statham.adsttc.com/bannerGitHubPublic1.png)
 
 [![node.js](https://img.shields.io/badge/Node.js-4.3-green.svg)](https://nodejs.org/es/download/)
 [![serverless](https://img.shields.io/badge/SERVERLESS-1.5.0-yellow.svg)](https://serverless.com/)
@@ -91,6 +91,8 @@ That's going to run the migrations automatically.
 
 <p align="center">
   <br>
-  <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b><br>
+  <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b>
+  <br><br>
+  <img src="https://statham.adsttc.com/logo-ad.png" style="width: 100%; max-width: 100px; height: auto;">
 </p>
 
