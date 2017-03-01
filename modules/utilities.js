@@ -8,7 +8,45 @@ var moment = require('moment');
 var credentials = require('nconf').file('credentials.json');
 var secretToken = credentials.get('secretToken');
 
-module.exports.createToken = function(origin) {
+module.exports.split_mgs_by_dest = function(response) {
+  var arrays = {
+    uniques: [],
+    repeated: {}
+  }
+  var lastmsg;
+  var dest;
+  var n = response.length;
+  for (var i = 0; i < n; i++) {
+    lastmsg = response.pop();
+    dest = lastmsg.Message.destination;
+    dest = dest.replace(/\/|\./g, "$");
+    if (isDestIn(response, dest)) {
+      if (!arrays.repeated[dest]) arrays.repeated[dest] = [];
+      arrays.repeated[dest].push(lastmsg);
+    } else {
+      if (!arrays.repeated[dest]) arrays.uniques.push(lastmsg);
+      else arrays.repeated[dest].push(lastmsg);
+    }
+  }
+  return arrays;
+}
+
+var isDestIn = function(array, dest) {
+  for (var i = 0; i < array.length; i++) {
+    var array_dest = array[i].Message.destination;
+    array_dest = array_dest.replace(/\/|\./g, "$");
+    if (array_dest == dest) return true;
+  }
+  return false;
+}
+
+module.exports.get_number_of_requests = function(num) {
+  var res = Math.floor(num / 10 + 1);
+  if (num % 10 == 0) res -= 1;
+  return res;
+}
+
+module.exports.create_token = function(origin) {
   var payload = {
     ip: origin,
     iat: moment().unix(),
@@ -113,7 +151,7 @@ var number_chars = function() {
 var message_html = function(message, callback) {
   fs.readFile('views/resend.html', 'utf8', function(err, data) {
     if (err) {
-      console.log();
+      console.log(err);
     }
     var data_message = ejs.render(data, {
       message: message

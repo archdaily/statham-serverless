@@ -29,7 +29,7 @@ module.exports.mail_message_generator = function(message) {
         }
       }
     }, function(err, data) {
-      if (err) console.log();
+      if (err) console.log(err);
     });
   })
 }
@@ -37,7 +37,7 @@ module.exports.mail_message_generator = function(message) {
 var render_body_html = function(message, callback) {
   fs.readFile('views/email.html', 'utf8', function(err, data) {
     if (err) {
-      console.log();
+      console.log(err);
     }
     var data_message = ejs.render(data, {
       lambda: message.resource,
@@ -46,7 +46,7 @@ var render_body_html = function(message, callback) {
       origin: message.origin,
       url: message.url,
       error: message.error,
-      token: utilities.createToken("email"),
+      token: utilities.create_token("email"),
       body: JSON.stringify(message.body)
     });
     callback(data_message);

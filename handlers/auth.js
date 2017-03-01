@@ -11,7 +11,7 @@ module.exports.getToken = (event, context, callback) => {
         callback(null, response);
       },
       200, {
-        "token": utilities.createToken(event.requestContext.identity.sourceIp)
+        "token": utilities.create_token(event.requestContext.identity.sourceIp)
       });
   } else {
     utilities.make_json_response(function(response) {
