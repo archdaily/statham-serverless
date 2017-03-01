@@ -69,7 +69,9 @@ var resp = function(message, response) {
 }
 
 var error_message_to_trunk = function(message) {
-  sqs.send_msg_trunk(message);
+  sqs.create_get_trunk_url(function(TrunkUrl) {
+    sqs.send_msg_queue(message, TrunkUrl);
+  });
 }
 
 var validate_tries_message = function(message, callback) {

@@ -9,60 +9,91 @@ AWS.config.loadFromPath('./credentials.json');
 
 var sqs = new AWS.SQS();
 
-module.exports.send_msg_trunk = function(message) {
-  create_get_trunk_url(function(TrunkURL) {
-    var params = disarm_message(message, TrunkURL);
-    sqs.sendMessage(params, function(err, data) {
-      if (err) console.log(err);
-    });
+module.exports.create_get_trunk_url = function(callback) {
+  var params = {
+    QueueName: 'StathamTrunk.fifo',
+    Attributes: {
+      ReceiveMessageWaitTimeSeconds: "0",
+      FifoQueue: "true",
+      ContentBasedDeduplication: "true"
+    }
+  };
+  sqs.createQueue(params, function(err, data) {
+    if (err) console.log(err)
+    else {
+      callback(data.QueueUrl);
+    }
   });
 }
 
-module.exports.get_count_trunk = function(callback) {
-  get_count_trunk_async(function(response) {
+module.exports.get_list = function(QueueURL, callback) {
+  var messages = [];
+  async.during(
+    function(condition) {
+      get_count(QueueURL, function(number) {
+        condition(null, number > 0);
+      });
+    },
+    function(callback) {
+      get_messages(QueueURL, function(err, response) {
+        if (!err) messages = messages.concat(response);
+        callback();
+      });
+    },
+    function(err) {
+      callback(messages);
+    }
+  );
+}
+
+module.exports.send_msg_queue = function(message, QueueURL) {
+  var params = disarm_message(message, QueueURL);
+  sqs.sendMessage(params, function(err, data) {
+    if (err) console.log(err);
+  });
+}
+
+module.exports.get_count_queue = function(QueueURL, callback) {
+  get_count(QueueURL, function(response) {
     callback(response);
   });
 }
 
-var delete_msg_trunk_internal = function(ReceiptHandle) {
-  create_get_trunk_url(function(TrunkURL) {
-    var params = {
-      QueueUrl: TrunkURL,
-      ReceiptHandle: ReceiptHandle
-    };
-    sqs.deleteMessage(params, function(err, data) {
-      if (err) console.log(err);
-    });
+var delete_msg_queue = function(QueueURL, ReceiptHandle) {
+  var params = {
+    QueueUrl: QueueURL,
+    ReceiptHandle: ReceiptHandle
+  };
+  sqs.deleteMessage(params, function(err, data) {
+    if (err) console.log(err);
   });
 }
 
-module.exports.get_messages_trunk = function(callback) {
-  get_message_trunk_async(callback);
+module.exports.get_messages_queue = function(QueueURL, callback) {
+  get_messages(QueueURL, callback);
 }
 
-var get_message_trunk_async = function(callback) {
-  create_get_trunk_url(function(TrunkURL) {
-    var params = receiveMessage_settings(TrunkURL);
-    sqs.receiveMessage(params, function(err, data) {
-      if (err) console.log(err)
-      else {
-        if (data.Messages) {
-          var messages = [];
-          for (var i = 0; i < data.Messages.length; i++) {
-            var message_statham = recontitution_message(data, i);
-            messages.push(message_statham);
-            delete_msg_trunk_internal(message_statham.ReceiptHandle);
-          }
-          callback(null, messages);
-        } else {
-          callback("undefinded");
+var get_messages = function(QueueURL, callback) {
+  var params = receiveMessage_settings(QueueURL);
+  sqs.receiveMessage(params, function(err, data) {
+    if (err) console.log(err)
+    else {
+      if (data.Messages) {
+        var messages = [];
+        for (var i = 0; i < data.Messages.length; i++) {
+          var message_statham = recontitution_message(data, i);
+          messages.push(message_statham);
+          delete_msg_queue(QueueURL, message_statham.ReceiptHandle);
         }
+        callback(null, messages);
+      } else {
+        callback("undefinded");
       }
-    });
+    }
   });
 }
 
-var receiveMessage_settings = function(TrunkURL) {
+var receiveMessage_settings = function(QueueURL) {
   var params = {
     AttributeNames: [
       "All"
@@ -71,7 +102,7 @@ var receiveMessage_settings = function(TrunkURL) {
     MessageAttributeNames: [
       "All"
     ],
-    QueueUrl: TrunkURL
+    QueueUrl: QueueURL
   };
   return params;
 }
@@ -96,7 +127,7 @@ var recontitution_message = function(data, i) {
   return msg;
 }
 
-var disarm_message = function(message, TrunkURL) {
+var disarm_message = function(message, QueueURL) {
   var params = {
     MessageAttributes: {
       "method": {
@@ -133,44 +164,25 @@ var disarm_message = function(message, TrunkURL) {
       }
     },
     MessageBody: JSON.stringify(message.body),
-    QueueUrl: TrunkURL,
+    QueueUrl: QueueURL,
     MessageDeduplicationId: message.id,
     MessageGroupId: "Trunk"
   };
   return params;
 }
 
-var create_get_trunk_url = function(callback) {
+var get_count = function(QueueURL, callback) {
   var params = {
-    QueueName: 'StathamTrunk.fifo',
-    Attributes: {
-      ReceiveMessageWaitTimeSeconds: "0",
-      FifoQueue: "true",
-      ContentBasedDeduplication: "true"
-    }
+    AttributeNames: [
+      "All"
+    ],
+    QueueUrl: QueueURL
   };
-  sqs.createQueue(params, function(err, data) {
+  sqs.getQueueAttributes(params, function(err, data) {
     if (err) console.log(err)
     else {
-      callback(data.QueueUrl);
+      var number = data.Attributes.ApproximateNumberOfMessages;
+      callback(number);
     }
-  });
-}
-
-var get_count_trunk_async = function(callback) {
-  create_get_trunk_url(function(TrunkURL) {
-    var params = {
-      AttributeNames: [
-        "All"
-      ],
-      QueueUrl: TrunkURL
-    };
-    sqs.getQueueAttributes(params, function(err, data) {
-      if (err) console.log(err)
-      else {
-        var number = data.Attributes.ApproximateNumberOfMessages;
-        callback(number);
-      }
-    });
   });
 }

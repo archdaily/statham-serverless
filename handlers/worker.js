@@ -3,55 +3,64 @@ var Message = require('../modules/message');
 var sqs = require('../modules/sqs');
 var utilities = require('../modules/utilities');
 var async = require('async');
-var cloudwatch = require('modules/cloudwatch');
+var cloudwatch = require('../modules/cloudwatch');
+
+var all_sent;
 
 module.exports.workFromTrunk = (event, context, callback) => {
-  sqs.get_count_trunk(function(number) {
-    consume_sqs(number, callback);
+  get_messages_from_trunk(function(data) {
+    resend_data(data, callback);
   });
 }
 
-var consume_sqs = function(number, callback) {
-  var N = utilities.get_number_of_threads(number);
-  var arr = utilities.get_array_of_numbers(N);
-  async.every(arr, function(i, next_request) {
-    async.forever(
-      function(call_forever) {
-        sqs.get_messages_trunk(function(err_get, messages) {
-          if (err_get) call_forever();
-          else {
-            call_forever(messages);
-          }
+var resend_data = function(data, callback_resend) {
+  all_sent = true;
+  async.parallel([
+      function(callback) {
+        async.each(data.uniques, function(message, next) {
+          send_and_next(message.Message, next);
+        }, function(err) {
+          callback();
         });
       },
-      function(messages) {
-        async.every(messages, function(message, next) {
-          Message.send(message.Message, function(err_send, response) {
-            if (err_send) {
-              next(null, false);
-            } else {
-              next(null, true);
-            }
+      function(callback) {
+        async.each(Object.keys(data.repeated), function(key, next_repeated) {
+          async.eachSeries(data.repeated[key], function(message, next) {
+            send_and_next(message.Message, next);
+          }, function(err) {
+            next_repeated();
           });
-        }, function(sent, result) {
-          if (result) {
-            next_request(null, true);
-          } else {
-            next_request(null, false);
-          }
+        }, function(err) {
+          callback()
         });
       }
-    );
-  }, function(sent, result) {
-    if (result) {
-      cloudwatch.disable_rule();
+    ],
+    function(err, results) {
+      if (all_sent) {
+        cloudwatch.disable_rule();
+      }
+      utilities.create_response(
+        200,
+        false,
+        "OK",
+        function(response) { callback_resend(null, response); },
+        null
+      );
     }
-    utilities.create_response(
-      200,
-      false,
-      "OK",
-      function(response) { callback(null, response); },
-      null
-    )
+  );
+}
+
+var send_and_next = function(message, next) {
+  Message.send(message, function(err_send, response) {
+    if (err_send) all_sent = false;
+    next();
+  });
+}
+
+var get_messages_from_trunk = function(callback) {
+  sqs.create_get_trunk_url(function(TrunkUrl) {
+    sqs.get_list(TrunkUrl, function(response) {
+      callback(utilities.split_mgs_by_dest(response));
+    });
   });
 }
