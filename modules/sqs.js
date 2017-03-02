@@ -32,20 +32,17 @@ module.exports.get_list = function(QueueURL, callback) {
   var messages = [];
   async.during(
     function(condition) {
-      console.log("cond");
       get_count(QueueURL, function(number) {
         condition(null, number > 0);
       });
     },
     function(callback) {
-      console.log("fn");
       get_messages(QueueURL, function(err, response) {
         if (!err) messages = messages.concat(response);
         callback();
       });
     },
     function(err) {
-      console.log("finish");
       callback(messages);
     }
   );
