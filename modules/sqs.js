@@ -21,10 +21,7 @@ module.exports.create_get_queue_url = function(Queue, callback) {
     }
   };
   sqs.createQueue(params, function(err, data) {
-    if (err) console.log(err)
-    else {
-      callback(data.QueueUrl);
-    }
+    if (!err) callback(data.QueueUrl);
   });
 }
 
@@ -51,7 +48,6 @@ module.exports.get_list = function(QueueURL, callback) {
 module.exports.send_msg_queue = function(message, QueueURL, callback) {
   var params = disarm_message(message, QueueURL);
   sqs.sendMessage(params, function(err, data) {
-    if (err) console.log(err);
     callback(data);
   });
 }
@@ -67,9 +63,7 @@ var delete_msg_queue = function(QueueURL, ReceiptHandle) {
     QueueUrl: QueueURL,
     ReceiptHandle: ReceiptHandle
   };
-  sqs.deleteMessage(params, function(err, data) {
-    if (err) console.log(err);
-  });
+  sqs.deleteMessage(params, function(err, data) {});
 }
 
 module.exports.get_messages_queue = function(QueueURL, callback) {
@@ -79,7 +73,7 @@ module.exports.get_messages_queue = function(QueueURL, callback) {
 var get_messages = function(QueueURL, callback) {
   var params = receiveMessage_settings(QueueURL);
   sqs.receiveMessage(params, function(err, data) {
-    if (err) console.log(err)
+    if (err) callback(err);
     else {
       if (data.Messages) {
         var messages = [];
@@ -182,8 +176,7 @@ var get_count = function(QueueURL, callback) {
     QueueUrl: QueueURL
   };
   sqs.getQueueAttributes(params, function(err, data) {
-    if (err) console.log(err)
-    else {
+    if (!err) {
       var number = data.Attributes.ApproximateNumberOfMessages;
       callback(number);
     }
@@ -195,7 +188,6 @@ module.exports.purge_queue = function(QueueURL, callback) {
     QueueUrl: QueueURL
   };
   sqs.purgeQueue(params, function(err, data) {
-    if (err) console.log(err, err.stack);
     callback(data);
   });
 }
@@ -205,7 +197,6 @@ module.exports.delete_queue = function(QueueURL, callback) {
     QueueUrl: QueueURL
   };
   sqs.deleteQueue(params, function(err, data) {
-    if (err) console.log(err, err.stack);
     callback(data);
   });
 }

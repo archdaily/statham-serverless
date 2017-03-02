@@ -28,17 +28,12 @@ module.exports.mail_message_generator = function(message) {
           }
         }
       }
-    }, function(err, data) {
-      if (err) console.log(err);
-    });
+    }, function(err, data) {});
   })
 }
 
 var render_body_html = function(message, callback) {
   fs.readFile('views/email.html', 'utf8', function(err, data) {
-    if (err) {
-      console.log(err);
-    }
     var data_message = ejs.render(data, {
       lambda: message.resource,
       method: message.method,
