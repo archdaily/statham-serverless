@@ -1,11 +1,12 @@
 var chai = require('chai');
 var expect = chai.expect;
-var config = require('nconf').file('credentials.json');
+var cred = require('nconf').file('credentials.json');
 
-var pass = config.get("passwordJWK");
+var pass = cred.get("passwordJWK");
 
 var testEvent = require('../test-event');
 
+var sqs = require("../modules/sqs");
 var utilities = require('../modules/utilities');
 var receiver = require('../handlers/receiver');
 
@@ -16,6 +17,7 @@ var urlDest =
 describe('receiver', function() {
   describe('#receiveAndSendMessage()', function() {
     it("should send without error", function(done) {
+      this.timeout(5000);
       testEvent.headers.Authorization = utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
@@ -34,6 +36,7 @@ describe('receiver', function() {
         });
     });
     it("should send message to the queue", function(done) {
+      this.timeout(5000);
       testEvent.headers.Authorization = utilities.create_token('testing');
       testEvent.body = JSON.stringify({
         "method": "POST",
@@ -265,6 +268,7 @@ describe('receiver', function() {
   });
   describe('#emailResend()', function() {
     it("should send without error", function(done) {
+      this.timeout(5000);
       testEvent.queryStringParameters = {
         "token": utilities.create_token('testing'),
         "method": "POST",
@@ -282,6 +286,7 @@ describe('receiver', function() {
         });
     });
     it("should send message to the queue", function(done) {
+      this.timeout(5000);
       testEvent.queryStringParameters = {
         "token": utilities.create_token('testing'),
         "method": "POST",
@@ -485,6 +490,17 @@ describe('receiver', function() {
           if (response.statusCode == 400) done();
           else done(response.statusCode);
         });
+    });
+  });
+});
+
+describe('Purge Queue', function() {
+  it("Delete all elements from develop Trunk", function(done) {
+    this.timeout(20000);
+    sqs.create_get_queue_url("StathamDevelopTrunk", function(TrunkUrl) {
+      sqs.get_list(TrunkUrl, function(messages) {
+        done();
+      });
     });
   });
 });

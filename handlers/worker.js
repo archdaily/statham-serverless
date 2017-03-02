@@ -58,7 +58,7 @@ var send_and_next = function(message, next) {
 }
 
 var get_messages_from_trunk = function(callback) {
-  sqs.create_get_trunk_url(function(TrunkUrl) {
+  sqs.create_get_queue_url("Statham" + process.env.MODE + "Trunk", function(TrunkUrl) {
     sqs.get_list(TrunkUrl, function(response) {
       callback(utilities.split_mgs_by_dest(response));
     });

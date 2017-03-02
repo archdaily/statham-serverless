@@ -7,11 +7,13 @@ var config = require('nconf').file('config.json');
 
 AWS.config.loadFromPath('./credentials.json');
 
+AWS.config.region = "us-west-2";
+
 var sqs = new AWS.SQS();
 
-module.exports.create_get_trunk_url = function(callback) {
+module.exports.create_get_queue_url = function(Queue, callback) {
   var params = {
-    QueueName: 'StathamTrunk.fifo',
+    QueueName: Queue + '.fifo',
     Attributes: {
       ReceiveMessageWaitTimeSeconds: "0",
       FifoQueue: "true",
@@ -30,26 +32,30 @@ module.exports.get_list = function(QueueURL, callback) {
   var messages = [];
   async.during(
     function(condition) {
+      console.log("cond");
       get_count(QueueURL, function(number) {
         condition(null, number > 0);
       });
     },
     function(callback) {
+      console.log("fn");
       get_messages(QueueURL, function(err, response) {
         if (!err) messages = messages.concat(response);
         callback();
       });
     },
     function(err) {
+      console.log("finish");
       callback(messages);
     }
   );
 }
 
-module.exports.send_msg_queue = function(message, QueueURL) {
+module.exports.send_msg_queue = function(message, QueueURL, callback) {
   var params = disarm_message(message, QueueURL);
   sqs.sendMessage(params, function(err, data) {
     if (err) console.log(err);
+    callback(data);
   });
 }
 
@@ -184,5 +190,25 @@ var get_count = function(QueueURL, callback) {
       var number = data.Attributes.ApproximateNumberOfMessages;
       callback(number);
     }
+  });
+}
+
+module.exports.purge_queue = function(QueueURL, callback) {
+  var params = {
+    QueueUrl: QueueURL
+  };
+  sqs.purgeQueue(params, function(err, data) {
+    if (err) console.log(err, err.stack);
+    callback(data);
+  });
+}
+
+module.exports.delete_queue = function(QueueURL, callback) {
+  var params = {
+    QueueUrl: QueueURL
+  };
+  sqs.deleteQueue(params, function(err, data) {
+    if (err) console.log(err, err.stack);
+    callback(data);
   });
 }
