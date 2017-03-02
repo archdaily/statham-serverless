@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "node test-server.js",
-    "test": "mocha"
+    "test": "MODE='Develop' mocha"
   },
   "repository": {
     "type": "git",
