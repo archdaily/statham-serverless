@@ -16,9 +16,7 @@ module.exports.enable_rule = function() {
     ScheduleExpression: scheduleExpression,
     State: 'ENABLED'
   };
-  cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log();
-  });
+  cloudwatchevents.putRule(params, function(err, data) {});
 }
 
 module.exports.disable_rule = function() {
@@ -27,9 +25,7 @@ module.exports.disable_rule = function() {
     ScheduleExpression: scheduleExpression,
     State: 'DISABLED'
   };
-  cloudwatchevents.putRule(params, function(err, data) {
-    if (err) console.log();
-  });
+  cloudwatchevents.putRule(params, function(err, data) {});
 }
 
 var exist_rule = function(callback) {
@@ -39,7 +35,6 @@ var exist_rule = function(callback) {
   };
   cloudwatchevents.listRules(params, function(err, data) {
     if (err) {
-      console.log();
       callback(false);
     } else {
       if (data.Rules.length == 1) callback(true);

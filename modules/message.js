@@ -51,11 +51,12 @@ var determinate_action_response = function(message, response, callback) {
       break;
     case 400:
     default:
-      error_message_to_trunk(message);
-      callback(
-        resp(
-          "The request don't arrived, therefore it was added to the queue",
-          response));
+      error_message_to_trunk(message, function(response) {
+        callback(
+          resp(
+            "The request don't arrived, therefore it was added to the queue",
+            response));
+      });
       break;
   }
 }
@@ -68,8 +69,12 @@ var resp = function(message, response) {
   return res;
 }
 
-var error_message_to_trunk = function(message) {
-  sqs.send_msg_trunk(message);
+var error_message_to_trunk = function(message, callback) {
+  sqs.create_get_queue_url("Statham" + process.env.MODE + "Trunk", function(TrunkUrl) {
+    sqs.send_msg_queue(message, TrunkUrl, function(response) {
+      callback(response);
+    });
+  });
 }
 
 var validate_tries_message = function(message, callback) {

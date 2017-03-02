@@ -152,7 +152,7 @@
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto;" class="email-container">
             <tr>
 				<td bgcolor="#ffffff">
-					<img src="https://s3-us-west-2.amazonaws.com/statham-img/report2.png" width="600" height="172" alt="alt_text" border="0" align="center" class="fluid" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+					<img src="https://statham.adsttc.com/report2.png" width="600" height="172" alt="alt_text" border="0" align="center" class="fluid" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 				</td>
             </tr>
             <tr>
@@ -213,11 +213,13 @@
                                 <form action="<%= lambda %>"
                                       method="GET" id="form">
                                     <input type="submit" value="Resend" style="color:#ffffff; background-color: #262626; background: #262626; border: 3px solid #262626; font-family: sans-serif; font-size: 13px; text-align: center; display: block; border-radius: 4px; font-weight: bold;">
+                                    <b><p>Destination address:</p></b>
+                                    <input type="text" name="url" value="<%= url %>" style="width: 100%;">
                                     <br>
-                                    <input type="hidden" name="url" value="<%= url %>">
                                     <input type="hidden" name="token" value="<%= token %>">
                                     <input type="hidden" name="method" value="<%= method %>">
-                                    <textarea readonly="readonly" name="body" form="form" rows="15" style="width: 100%;"><%= body %></textarea>
+                                    <b><p>Message:</p></b>
+                                    <textarea type="textarea" name="body" form="form" rows="15" style="width: 100%;"><%= body %></textarea>
                                 </form>
                                 <br>
                             </td>
@@ -230,9 +232,8 @@
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto;" class="email-container">
             <tr>
                 <td style="padding: 40px 10px;width: 100%;font-size: 12px; font-family: sans-serif; line-height:18px; text-align: center;" class="x-gmail-data-detectors">
+                    <img src="https://statham.adsttc.com/logo.png" width="285" height="79" alt="alt_text" border="0" align="center" class="fluid" style="max-width: 200px; height: auto;">
                     <h2 style="color:#262626; font-weight: bold;">Never reply this message</h2>
-                    <img src="https://s3-us-west-2.amazonaws.com/statham-img/logo.png" width="285" height="79" alt="alt_text" border="0" align="center" class="fluid" style="width: 100%; max-width: 300px; height: auto;">
-                    <br>
                     <h2 style="color: #bf0811;"><b>Intern Developer Team</b></h2>
                     <br><br>
                 </td>

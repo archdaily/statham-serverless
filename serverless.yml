@@ -4,6 +4,8 @@ provider:
   name: aws
   runtime: nodejs4.3
   region: us-west-2
+  environment:
+    MODE: Production
 
 functions:
   receiver:
