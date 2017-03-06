@@ -18,7 +18,11 @@ app.get('/receiver', function(req, res) {
   testEvent.path = '/receiver';
   testEvent.resource = '/receiver';
   testEvent.sourceIp = "";
+  console.log("Message arrived:");
+  console.log(testEvent.body);
   receiver.emailResend(testEvent, null, function(err, response) {
+    console.log("Response from method:")
+    console.log(response);
     res.statusCode = 200;
     res.send(response.body);
   });
@@ -31,8 +35,12 @@ app.post('/receiver', function(req, res) {
   testEvent.path = '/receiver';
   testEvent.resource = '/receiver';
   testEvent.sourceIp = "";
+  console.log("Message arrived:");
+  console.log(testEvent.body);
   receiver.receiveAndSendMessage(testEvent, null, function(err, response) {
-    res.statusCode = 200;
+    console.log("Response from method:")
+    console.log(response);
+    res.statusCode = response.statusCode
     res.send(JSON.parse(response.body));
   });
 });
@@ -44,16 +52,8 @@ app.get('/getToken', function(req, res) {
   testEvent.resource = '/getToken';
   testEvent.sourceIp = "";
   auth.getToken(testEvent, null, function(err, response) {
-    if (response.statusCode == 400) {
-      res.statusCode=400;
-      res.send("Error: invalid or missing password");
-    }
-    else{
-      res.statusCode = 200;
-      res.send({
-        token: JSON.parse(response.body).token
-      }); 
-    }
+    res.statusCode = response.statusCode
+    res.send(JSON.parse(response.body));
   });
 });
 
