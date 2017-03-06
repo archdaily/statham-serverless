@@ -33,6 +33,7 @@ var determinate_action_response = function(message, response, callback) {
         "The request was processed successfully.",
         response));
       break;
+    case 400:
     case 401:
     case 403:
     case 405:
@@ -49,9 +50,10 @@ var determinate_action_response = function(message, response, callback) {
           response));
       });
       break;
-    case 400:
+    case 404:
+    case 503:
     default:
-      error_message_to_trunk(message, function(response) {
+      error_message_to_trunk(message, function(sqs) {
         callback(
           resp(
             "The request don't arrived, therefore it was added to the queue",
@@ -162,13 +164,13 @@ var working_data = function(res, callback) {
     } catch (e) {
       data = dataResponse;
     }
-    callback({ success: data, statusCode: res.statusCode });
+    callback({ data: data, statusCode: res.statusCode });
   });
 }
 
 var req_error = function(req, callback) {
   req.on('error', (e) => {
-    callback({ error: e.message, statusCode: 400 });
+    callback({ error: e.message, statusCode: 503 });
   });
 }
 
