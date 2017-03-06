@@ -156,7 +156,13 @@ var working_data = function(res, callback) {
     dataResponse += chunk;
   });
   res.on('end', () => {
-    callback({ success: JSON.parse(dataResponse), statusCode: res.statusCode });
+    var data;
+    try {
+      data = JSON.parse(dataResponse);
+    } catch (e) {
+      data = dataResponse;
+    }
+    callback({ success: data, statusCode: res.statusCode });
   });
 }
 
