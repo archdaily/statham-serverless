@@ -3,3 +3,4 @@ credentials.json
 node_modules/
 .bash_history
 .npm
+npm-debug.log
