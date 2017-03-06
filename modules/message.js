@@ -33,6 +33,7 @@ var determinate_action_response = function(message, response, callback) {
         "The request was processed successfully.",
         response));
       break;
+    case 400:
     case 401:
     case 403:
     case 405:
