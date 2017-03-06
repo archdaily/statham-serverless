@@ -45,7 +45,8 @@ var deliver_message = function(isHTML, messageJSON, callback) {
         err.response
       );
     } else {
-      utilities.create_response(200,
+      utilities.create_response(
+        data.response.statusCode,
         isHTML,
         data.message,
         function(response) {
