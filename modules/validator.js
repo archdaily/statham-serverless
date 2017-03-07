@@ -5,12 +5,17 @@ var credentials = require('nconf').file('credentials.json');
 var secretToken = credentials.get('secretToken');
 
 module.exports.getParams = function(email, event, callback) {
-  var params = getParameters(email, event);
-  if (!params) callback(err("Bad auth.", 401));
-  else if (!verifyURL(params.url)) callback(err("Bad url.", 400));
-  else if (!verifyBody(params.body)) callback(err("Bad body.", 400));
-  else if (!verifyMethod(params.method)) callback(err("Bad method.", 400));
-  else callback(null, params);
+  if (!verifyTokenRequest(event, email)) callback(err("Bad auth.", 401));
+  else {
+    var params = getParameters(email, event);
+    var error = "";
+    if (!verifyURL(params.url)) error += "Bad URL. ";
+    if (!verifyMethod(params.method)) error += "Bad method. ";
+    if (!verifyBody(params.body))
+      if (params.method != 'GET') error += "Bad body. ";
+    if (error == "") callback(null, params);
+    else callback(err(error, 400));
+  }
 };
 
 var err = function(message, code) {
@@ -22,27 +27,28 @@ var err = function(message, code) {
 }
 
 var getParameters = function(email, event) {
-  var params;
-  if (email) {
-    if (!verifyTokenStringParameter(event)) return null;
-    params = {
-      "url": event.queryStringParameters.url,
-      "method": event.queryStringParameters.method,
-      "body": event.queryStringParameters.body
-    }
-  } else {
-    if (!verifyTokenHeader(event)) return null;
-    var body = JSON.parse(event.body);
-    params = {
-      "url": body.url,
-      "method": body.method,
-      "body": body.body
-    }
+  var params, message;
+  if (email) message = event.queryStringParameters;
+  else message = JSON.parse(event.body);
+  params = {
+    "url": message.url,
+    "method": message.method,
+    "body": message.body
   }
-  try{
+  try {
+    params.method = params.method.toUpperCase();
     params.body = JSON.parse(params.body);
-  } catch(err){}
+  } catch (err) {}
   return params;
+}
+
+var verifyTokenRequest = function(event, email) {
+  if (email)
+    if (verifyTokenStringParameter(event)) return true;
+    else return false;
+  else
+  if (verifyTokenHeader(event)) return true;
+  else return false;
 }
 
 var verifyTokenHeader = function(event) {
@@ -88,7 +94,7 @@ var verifyBody = function(body) {
 
 var verifyMethod = function(method) {
   if (!method) return false;
-  if (method.toUpperCase() == 'POST' || method.toUpperCase() == 'GET')
+  if (method == 'POST' || method == 'GET')
     return true;
   return false;
 }

@@ -2,6 +2,7 @@ service: StathamService
 
 provider:
   name: aws
+  stage: production
   runtime: nodejs4.3
   region: us-west-2
   environment:
@@ -27,7 +28,7 @@ functions:
     handler: handlers/worker.workFromTrunk
     events:
       - schedule:
-          name: StathamCycle
+          name: StathamRounds
           rate: ${file(/config.json):CycleExpression}
           enabled: false
   auth:
