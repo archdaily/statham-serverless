@@ -102,7 +102,10 @@ var error_message_to_email = function(message, callback) {
 }
 
 var send_message = function(message, callback) {
-  var postData = get_string_body(message);
+  var postData
+  if (message.method != 'GET')
+    postData = get_string_body(message);
+  else postData = "";
   var options = serialize_options(message, postData.length);
   var protocol = url.parse(message.url).protocol;
   if (protocol == 'https:') {
