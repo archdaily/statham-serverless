@@ -91,8 +91,6 @@ For more details on how to send/receive messages see the [wiki](https://github.c
 
 <p align="center">
   <br>
-  <b>->Created with &#x2665; in Chile, by Interns of ArchDaily.<-</b>
-  <br><br>
   <img src="https://statham.adsttc.com/logo-ad.png" style="width: 100%; max-width: 100px; height: auto;">
 </p>
 
