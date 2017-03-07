@@ -36,6 +36,7 @@ var determinate_action_response = function(message, response, callback) {
     case 400:
     case 401:
     case 403:
+    case 404:
     case 405:
     case 410:
     case 411:
@@ -50,7 +51,6 @@ var determinate_action_response = function(message, response, callback) {
           response));
       });
       break;
-    case 404:
     case 503:
     default:
       error_message_to_trunk(message, function(sqs) {
