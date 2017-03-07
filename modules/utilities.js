@@ -3,7 +3,6 @@ var fs = require('fs');
 var ejs = require('ejs');
 var url = require('url');
 var jwt = require('jsonwebtoken');
-var moment = require('moment');
 
 var credentials = require('nconf').file('credentials.json');
 var secretToken = credentials.get('secretToken');
@@ -40,17 +39,9 @@ var isDestIn = function(array, dest) {
   return false;
 }
 
-module.exports.get_number_of_requests = function(num) {
-  var res = Math.floor(num / 10 + 1);
-  if (num % 10 == 0) res -= 1;
-  return res;
-}
-
 module.exports.create_token = function(origin) {
   var payload = {
-    ip: origin,
-    iat: moment().unix(),
-    exp: moment().add(14, "days").unix(),
+    ip: origin
   };
   return jwt.sign(payload, secretToken);
 };

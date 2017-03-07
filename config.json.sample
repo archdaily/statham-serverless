@@ -1,0 +1,6 @@
+{
+  "CycleExpression": <SCHEDULE_EXPRESSION>,
+  "TriesNum": <NUMBER_OF_TRIES>,
+  "ToEmailNotification": <TO_EMAIL>,
+  "FromEmailNotification": <FROM_EMAIL>
+}

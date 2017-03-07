@@ -36,6 +36,7 @@ var determinate_action_response = function(message, response, callback) {
     case 400:
     case 401:
     case 403:
+    case 404:
     case 405:
     case 410:
     case 411:
@@ -50,7 +51,6 @@ var determinate_action_response = function(message, response, callback) {
           response));
       });
       break;
-    case 404:
     case 503:
     default:
       error_message_to_trunk(message, function(sqs) {
@@ -102,7 +102,10 @@ var error_message_to_email = function(message, callback) {
 }
 
 var send_message = function(message, callback) {
-  var postData = get_string_body(message);
+  var postData
+  if (message.method != 'GET')
+    postData = get_string_body(message);
+  else postData = "";
   var options = serialize_options(message, postData.length);
   var protocol = url.parse(message.url).protocol;
   if (protocol == 'https:') {
