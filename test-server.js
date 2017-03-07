@@ -12,7 +12,7 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/receiver', function(req, res) {
+app.get('/receive', function(req, res) {
   testEvent.queryStringParameters = req.query;
   testEvent.httpMethod = "GET";
   testEvent.path = '/receiver';
@@ -28,7 +28,7 @@ app.get('/receiver', function(req, res) {
   });
 });
 
-app.post('/receiver', function(req, res) {
+app.post('/receive', function(req, res) {
   testEvent.body = JSON.stringify(req.body);
   testEvent.headers.Authorization = req.headers.authorization;
   testEvent.httpMethod = "POST";
