@@ -10,13 +10,15 @@ var sqs = require("../modules/sqs");
 var utilities = require("../modules/utilities");
 var worker = require("../handlers/worker");
 
-var urlDest =
-  "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com" +
-  "/dev/testingDestination";
+var urlDest = "https://reqres.in/api/users"
 
 var testMsg = {
   method: "POST",
-  body: "body",
+  body: {
+    "value1": "valor1",
+    "value2": 2,
+    "value3": "value3"
+  },
   url: urlDest,
   destination: "/dev/testingDestination",
   origin: "origin",
