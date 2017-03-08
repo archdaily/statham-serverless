@@ -10,9 +10,7 @@ var sqs = require("../modules/sqs");
 var utilities = require('../modules/utilities');
 var receiver = require('../handlers/receiver');
 
-var urlDest =
-  "https://5wfzggu2zi.execute-api.us-west-2.amazonaws.com" +
-  "/dev/testingDestination";
+var urlDest = "https://reqres.in/api/users"
 
 describe('receiver', function() {
   describe('#receiveAndSendMessage()', function() {
@@ -31,7 +29,7 @@ describe('receiver', function() {
       receiver.receiveAndSendMessage(testEvent, null,
         function(err, response) {
           var body = JSON.parse(response.body);
-          if (response.statusCode == 200) done();
+          if (response.statusCode == 201) done();
           else done(body.Status);
         });
     });
@@ -281,7 +279,7 @@ describe('receiver', function() {
       };
       receiver.emailResend(testEvent, null,
         function(err, response) {
-          if (response.statusCode == 200) done();
+          if (response.statusCode == 201) done();
           else done(response.statusCode);
         });
     });

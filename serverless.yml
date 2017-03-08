@@ -38,9 +38,3 @@ functions:
       - http:
           path: getToken
           method: get
-  tester:
-    handler: handler.tester
-    events:
-      - http:
-          path: testingDestination
-          method: post
