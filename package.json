@@ -1,6 +1,6 @@
 {
   "name": "statham-serverless",
-  "version": "2.0.0",
+  "version": "3.2.0",
   "description": "Trustly transporter of HTTP POST request that have sending attempts if the destination couldn't be reached.",
   "main": "send.js",
   "dependencies": {
