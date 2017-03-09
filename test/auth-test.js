@@ -2,7 +2,7 @@ var chai = require('chai');
 var expect = chai.expect;
 var config = require('nconf').file('credentials.json');
 
-var pass = config.get("passwordJWK");
+var pass = config.get("passwordJWT");
 
 var testEvent = require('../test-event');
 

@@ -5,7 +5,7 @@ var auth = require('./handlers/auth')
 var receiver = require('./handlers/receiver');
 var config = require('nconf').file('credentials.json');
 
-var pass = config.get("passwordJWK");
+var pass = config.get("passwordJWT");
 
 var app = express();
 

@@ -3,7 +3,7 @@
 var utilities = require('../modules/utilities');
 var config = require('nconf').file('credentials.json');
 
-var pass = config.get("passwordJWK");
+var pass = config.get("passwordJWT");
 
 module.exports.getToken = (event, context, callback) => {
   if (event.headers.Authorization == pass) {
