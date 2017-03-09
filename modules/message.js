@@ -81,7 +81,7 @@ var error_message_to_trunk = function(message, callback) {
 }
 
 var validate_tries_message = function(message, callback) {
-  if (message.tries && message.tries == 0)
+  if (message.tries && message.tries <= 0)
     error_message_to_email(message, function(response) {
       callback(response);
     });
