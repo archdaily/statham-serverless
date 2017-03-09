@@ -53,6 +53,7 @@ var determinate_action_response = function(message, response, callback) {
       break;
     case 503:
     default:
+      message.tries -= 1;
       error_message_to_trunk(message, function(sqs) {
         callback(
           resp(
@@ -80,15 +81,12 @@ var error_message_to_trunk = function(message, callback) {
 }
 
 var validate_tries_message = function(message, callback) {
-  if (!message.tries)
-    message.tries = 0;
-  message.tries += 1;
-
-  if (message.tries > triesNum)
+  if (message.tries || message.tries == 0)
     error_message_to_email(message, function(response) {
       callback(response);
     });
   else
+    if (!message.tries) message.tries = 0;
     send_message(message, function(response) {
       callback(response);
     });
