@@ -23,7 +23,7 @@ var testMsg = {
   destination: "/dev/testingDestination",
   origin: "origin",
   resource: "resource",
-  tries: 0,
+  tries: 5,
   error: "error"
 };
 
