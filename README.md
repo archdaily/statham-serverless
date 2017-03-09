@@ -13,6 +13,10 @@ Statham is an application made in Node.js over AWS Lambda. This means that the a
 
 Statham acts as a middleware between HTTP POST requests/responses, with an algorithm that **tries** a specified amount of attempts to send a particular message. If the message can't be delivered after all the attemps, Statham will notify the failure to a given email.
 
+## Presentation of Statham
+
+- [Slide](https://docs.google.com/presentation/d/1uC2IiNbX9xUxYNr6KMt2A_5CrRqRB9vg0epeTP1KPVw/edit?usp=sharing)
+
 ## Requirement
 
 - An AWS account.
