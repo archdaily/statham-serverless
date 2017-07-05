@@ -8,7 +8,7 @@ AWS.config.loadFromPath('./credentials.json');
 var cloudwatchevents = new AWS.CloudWatchEvents();
 var lambda = new AWS.Lambda();
 var scheduleExpression = config.get('CycleExpression');
-var StathamRuleName = "StathamCycle";
+var StathamRuleName = "StathamRounds";
 
 module.exports.enable_rule = function() {
   var params = {
