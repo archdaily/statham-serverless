@@ -9,6 +9,7 @@ RUN npm link express
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
+RUN rm -Rf node_modules
 RUN npm install
 
 CMD ["npm", "start"]
